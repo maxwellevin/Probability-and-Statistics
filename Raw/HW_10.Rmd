@@ -1,0 +1,206 @@
+---
+title: 'Math 451 HW #10'
+author: "Maxwell Levin"
+date: "October 5, 2018"
+header-includes:
+  - \usepackage{tikz}
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1.
+
+#### A continuous random variable $\small{X}$ has the following probability density function:
+\[
+  f_X(x)=\left\{
+          \begin{array}{ll}
+              k\left(2 + x^3\right), &  \text{if } 0 \leq x \leq 4 ; \\[1mm]
+              0, & \text{otherwise.} \\[1mm]
+          \end{array} 
+          \right.
+\]
+
+#### (a) Determine the value of $\small{k}$.
+
+Since $\small{f_X(x)}$ is a probability distribution function, we require
+\[
+  1 = \int_{-\infty}^\infty f_X(x)dx.
+\]
+
+Since our $\small{f_X(x)}$ is 0 except in the range $\small{0 \leq x \leq 4}$, this integral becomes
+\[
+  1 = \int_0^4 k(2 + x^3) dx.
+\]
+
+We can now solve for $\small{k}$ by integrating:
+\[
+  1 = \left(2kx + \frac{kx^4}{4}\right) \Big{|}_0^4,
+\]
+\[
+  1 = 8k + 64k \implies k = \frac{1}{72}.
+\]
+
+We can plug our value of $\small{k}$ back into our p.d.f. $\small{f_X(x)}$ to get
+\[
+  f_X(x)=\left\{
+          \begin{array}{ll}
+              \frac{1}{36} + \frac{1}{72}x^3, &  \text{if } 0 \leq x \leq 4 ; \\[1mm]
+              0, & \text{otherwise.} \\[1mm]
+          \end{array} 
+          \right.  
+\]
+
+#### (b) Find the cumulative distribution function (c.d.f.) $\small{F_X(x)}$ of $\small{X}$. Also sketch $\small{F_X(x)}$.
+
+We define the c.d.f. $\small{F_X(x)}$ to be the probability that $\small{X \leq x}$ for some $\small{x \in \mathbb{R}}$. Since $\small{X \sim f_X(x)}$, we can express $\small{F_X(x)}$ as the integral
+\[
+  \int_{-\infty}^x f_X(t)dt = 
+          \left\{
+          \begin{array}{ll}
+              0   &   \text{if } x < 0; \\[1mm]
+              \int_0^x \frac{1}{36} + \frac{1}{72}t^3 dt, &  \text{if } 0 \leq x \leq 4 ; \\[1mm]
+              1, & \text{if } x > 4. \\[1mm]
+          \end{array} 
+          \right.  
+\]
+
+My LaTeX skills have improved, and I can now plot functions using the $\small{tikz}$ package. We sketch the c.d.f. $\small{F_X(x)}$ below
+\begin{center}
+\begin{tikzpicture}
+      \draw[->] (-1,0) -- (5,0) node[right] {$x$};
+      \draw[->] (0,-1) -- (0,2) node[above] {$y$};
+      \draw[scale=1,line width=2,domain=-1:0,smooth,variable=\x,black] plot ({\x},{0});
+      \draw[scale=1,line width=2,domain=0:4,smooth,variable=\x,black] plot ({\x},{(\x/36) + (\x^4)/288});
+      \draw[scale=1,line width=2,domain=4:5,smooth,variable=\x,black] plot ({\x},{1});
+      \draw[help lines] (-1,-1) grid (5,2);
+\end{tikzpicture}
+\end{center}
+
+
+
+#### (c) Find $\small{Pr\{X < 2 | X > 1\}}$.
+
+
+We note that $\small{Pr\{X < 2 | X > 1\}}$ is equivalent to 
+\[
+  \frac{Pr\{x > 1 \cap x < 2\}}{Pr\{x > 1\}}.
+\]
+
+We can further rewrite this as:
+\[
+  \frac{Pr\{x < 2\} - Pr\{x < 1\}}{1 - Pr\{x < 1\}}.
+\]
+
+We now calculate $\small{Pr\{x < 2\}}$ and $\small{Pr\{x < 1\}}$ by using our c.d.f. $\small{F_X(x)}$:
+\[
+  Pr\{x < 2\} = F_X(2) = \frac{1}{36}(2) + \frac{1}{288}(2)^4 = \frac{1}{9},
+\]
+\[
+  Pr\{x < 1\} = F_X(1) = \frac{1}{36}(1) + \frac{1}{288}(1)^4 = \frac{1}{32}.
+\]
+
+We then have
+\[
+  \frac{Pr\{x < 2\} - Pr\{x < 1\}}{1 - Pr\{x < 1\}} =
+  \frac{\frac{1}{9} - \frac{1}{32}}{1 - \frac{1}{32}} =
+  \frac{23}{279}.
+\]
+
+
+#### (d) Find the 25th percentile of $\small{X}$. [Note: If $\small{x}$ is the 25th percentile of a continuous random variable $\small{X}$, then $\small{x}$ satisfies $\small{Pr\{X \leq x\} = 0.25}$.] You may need to find the 25th percentile numerically.
+
+To calculate the 25th percentile of $\small{X}$ we need to solve the equation
+\[
+  0.25 = \frac{1}{36}x + \frac{1}{288}x^4
+\]
+
+for $\small{X}$. We do this numerically by running the following python code that I've adapted from the Computational Physics course I took last Fall:
+```{python, python.reticulate=FALSE, comment=NA}
+from math import fabs
+
+
+def F_X(x):
+  """Our function F_X(x) where we subtract 0.25 so that one side is 0, 
+  as required by our root-finding algorithm"""
+  return x/36 + (x**4)/288 - 0.25
+
+
+# We search for a root in the interval [a, b]
+a = 0
+b = 4
+
+# Stops the algorithm when the accuracy reaches six decimal places
+error = 1000
+delta = 1e-6
+
+# The main loop of our algorithm
+while error > delta:
+    # Start x' in the middle of the interval
+    xp = (a + b)/2
+    
+    if ( F_X(xp) * F_X(a) > 0):  # Increment our lower bound
+        a = xp
+    else:  # Decrement the upper bound
+        b = xp
+        
+    # Calculate the error as the absolute difference here
+    error = fabs(F_X(b) - F_X(a))
+
+# Print the final value
+print((a + b)/2)
+```
+
+Note that we have to be careful with the interval we set with this code; if there are multiple roots within the set interval, I'm not sure which one it will find. We expect our root to be somewhere between 0 and 4, so this is what we set here.
+
+My code tells us that the 25th percentile of $\small{X}$ is when $\small{x \approx 2.6678}$.
+
+
+#### (e) Let $\small{Y = \left \lfloor{X}\right \rfloor}$, where $\small{Y = \left \lfloor{\cdot}\right \rfloor}$ denotes the floor function. Find the probability mass function (p.m.f.) of $\small{Y}$. [Note that the floor function discretizes a continuous random variable.]
+
+We construct the following table
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+$Y = y$ & $y = 0$ & $y=1$ & $y=2$ & $y=3$ & otherwise\\ \hline
+$f_Y(y)$ & $\int_0^1\frac{1}{36}+\frac{1}{72}x^3dx$ & $\int_1^2\frac{1}{36}+\frac{1}{72}x^3dx$ & $\int_2^3\frac{1}{36}+\frac{1}{72}x^3dx$ & $\int_3^4\frac{1}{36}+\frac{1}{72}x^3dx$ & $0$\\ \hline
+\end{tabular}
+\end{table}
+
+We evaluate these integrals to get 
+\begin{table}[!h]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+$Y =y$ & $y = 0$ & $y=1$ & $y=2$ & $y=3$ & otherwise\\ \hline
+$f_Y(y)$ & 9/288 & 23/288 & 73/288 & 183/288 & $0$\\ \hline
+\end{tabular}
+\end{table}
+
+
+#### (f) Also find the cumulative distribution function (c.d.f.) of $\small{Y}$ defined in part (e).
+
+The c.d.f. of $\small{F_Y(y)}$ is defined as $\small{Pr\{Y \leq y\}}$. To calculate this, we can simply use our previous table. We do this in the following manner:
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+$Y = y$ & $y < 0$ & $y=0$ & $y=1$ & $y=2$ & $y \geq 3$\\ \hline
+$F_Y(y)$ & 0 & $\frac{9}{288}$ & $\frac{9+23}{288}$ & $\frac{9+23+73}{288}$ & $\frac{9+23+73+183}{288}$\\ \hline
+\end{tabular}
+\end{table}
+
+Thus our cumulative distribution function $\small{F_Y(y)}$ is:
+\begin{table}[!h]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+$Y = y$ & $y < 0$ & $y=0$ & $y=1$ & $y=2$ & $y \geq 3$\\ \hline
+$F_Y(y)$ & 0 & 9/288 & 32/288 & 105/288 & $1$\\ \hline
+\end{tabular}
+\end{table}

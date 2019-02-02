@@ -1,0 +1,151 @@
+---
+title: 'Math 451 HW #17'
+author: "Maxwell Levin"
+date: "November 5, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1.
+#### Show that the normal probability density function 
+\[
+  f(x) = \frac{1}{\sigma\sqrt{2\pi}} exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2 \right) \text{ , }\text{ } -\infty < x < \infty,
+\]
+
+#### has points of inflection at $\small{x = \mu - \sigma}$ and $\small{x = \mu + \sigma}$.
+
+To find the points of inflection we need to set the second derivative of $\small{f(x)}$ equal to zero and solve for *x*. I first do some prep work:
+\[
+  \frac{d}{dx}\left[-\frac{1}{2\sigma^2}(x-\mu)^2 \right] = -\frac{1}{\sigma^2} ( x - \mu),
+\]
+\[
+  \frac{d}{dx}[f(x)] = \frac{1}{\sigma\sqrt{2\pi}}\left(-\frac{1}{\sigma^2} ( x - \mu) \right) exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2 \right),
+\]
+\[
+  = -\frac{1}{\sigma^3\sqrt{2\pi}}(x-\mu)exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2 \right), 
+\]
+\[
+  = -\frac{x}{\sigma^3\sqrt{2\pi}}exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2 \right) + \frac{\mu}{\sigma^3\sqrt{2\pi}}exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2 \right).
+\]
+
+Now that we have the first derivative of $\small{f(x)}$, we can take the second derivative of $\small{f(x)}$ by using the product rule on the first derivative:
+\[
+  \frac{d^2}{dx^2}[f(x)] = -\frac{1}{\sigma^3\sqrt{2\pi}}exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2 \right)
+  + \frac{x(x-\mu)}{\sigma^5\sqrt{2\pi}}exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2 \right)
+  - \frac{\mu(x-\mu)}{\sigma^5\sqrt{2\pi}}exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2 \right),
+\]
+\[
+  = \frac{1}{\sigma^5\sqrt{2\pi}}\left[ -\sigma^2 + x(x-\mu) - \mu(x - \mu)  \right]exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2 \right),
+\]
+\[
+  = \frac{1}{\sigma^5\sqrt{2\pi}}\left[ x^2 -2\mu x + \mu^2 -\sigma^2  \right]exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2 \right).
+\]
+
+We now set this equal to zero and solve for *x* to get the points of inflection:
+\[
+  \frac{d^2}{dx^2}[f(x)] = 0 = \frac{1}{\sigma^5\sqrt{2\pi}}\left[ x^2 -2\mu x + \mu^2 -\sigma^2  \right]exp\left(-\frac{1}{2\sigma^2}(x-\mu)^2 \right),
+\]
+\[
+  0 = x^2 -2\mu x + \mu^2 -\sigma^2,
+\]
+\[
+  \sigma^2 = (x - \mu)^2,
+\]
+\[
+  \pm\sigma = x - \mu,
+\]
+\[
+  x = \mu \pm \sigma.
+\]
+
+Thus we've shown that $\small{f(x)}$ has points of inflection at $\small{x =\mu - \sigma}$ and $\small{x=\mu + \sigma}$.
+
+## Question 2.
+#### If *X* is normally distributed with mean $\small{\mu}$ and standard deviation $\small{\sigma}$, it can be numerically shown that 
+\[
+  Pr\{\mu - 1\sigma \leq X \leq \mu + 1\sigma\} \approx 0.680 \text{ }\text{ }\text{ (1)}
+\]
+\[
+  Pr\{\mu - 2\sigma \leq X \leq \mu + 2\sigma\} \approx 0.950 \text{ }\text{ }\text{ (2)}
+\]
+\[
+  Pr\{\mu - 3\sigma \leq X \leq \mu + 3\sigma\} \approx 0.997 \text{ }\text{ }\text{ (3)}
+\]
+
+#### (a) Compute the corresponding probabilities in (1), (2), and (3) for a continuous uniform distibution over the interval [0, 1].
+
+Recall that a continuous random variable *X* that is uniformly distributed has the pdf
+\[
+  f(x) = 
+  \left\{
+  \begin{array}{ll}
+      \frac{1}{b-a} & \text{if }\text{ } a \leq x \leq b; \\[1mm]
+      0 & \text{otherwise.} \\[1mm]
+  \end{array} 
+  \right.
+\]
+
+To find the probability that $\small{Pr\{\alpha \leq X \leq \beta\}, \text{ where we assume that }\text{ } \alpha,\beta\in[a,b]}$ we can take 
+\[
+  Pr\{\alpha \leq X \leq \beta\} = \int_\alpha^\beta f(x)dx = \int_\alpha^\beta \frac{1}{b-a}dx = \frac{1}{b-a}(\beta - \alpha).
+\]
+
+For equation (1) this becomes:
+\[
+  Pr\{\mu - 1\sigma \leq X \leq \mu + 1\sigma\} = \frac{1}{b-a}(\mu + 1\sigma - (\mu - 1\sigma)) = \frac{2}{b-a}\sigma.
+\]
+
+We can further simplify this using the fact that $\small{\sigma = \sqrt{\frac{(b-a)^2}{12}} = \frac{\sqrt{3}(b-a)}{6}}$ for a uniform distribution (from Classnotes 22):
+\[
+  Pr\{\mu - 1\sigma \leq X \leq \mu + 1\sigma\} = \frac{2}{b-a}\frac{(b-a)\sqrt{3}}{6} = \frac{\sqrt{3}}{3} \approx 0.577 \text{ }\text{ } \text{ (1)}.
+\]
+
+We can do this for (2) as well:
+\[
+  Pr\{\mu - 2\sigma \leq X \leq \mu + 2\sigma\} = \frac{1}{b-a}(\mu + 2\sigma - (\mu - 2\sigma)) = \frac{4}{b-a}\sigma,
+\]
+\[
+  = \frac{4}{b-a}\frac{(b-a)\sqrt{3}}{6} = \frac{2\sqrt{3}}{3} \approx 1.155.
+\]
+
+Note that this probability is greater than 1, which is curious. I believe this implies that at least one of our assumptions about $\small{\alpha,\beta \in [a, b]}$ is incorrect. To account for this I believe we can take the minimum of 1 and whatever number we calculate using our process above. Thus for (2) we have:
+\[
+  Pr\{\mu - 2\sigma \leq X \leq \mu + 2\sigma\} = 1 \text{ }\text{ } \text{ (2)}.
+\]
+
+Keeping this in mind while we calculate (3) we get:
+\[
+  Pr\{\mu - 3\sigma \leq X \leq \mu + 3\sigma\} = \frac{1}{b-a}(\mu + 3\sigma - (\mu - 3\sigma)) = \frac{6}{b-a}\sigma,
+\]
+\[
+  = \frac{6}{b-a} \frac{(b-a)\sqrt{3}}{6} = \sqrt{3} \approx 1.732 \implies 1 \text{ }\text{ } \text{ (3)}.
+\]
+
+#### (b) Compute the corresponding probabilities in (1), (2), and (3) for an exponential distribution with parameter $\small{\beta}$. 
+
+We know that if *X* is a continuous random variable that is exponentially distributed has the pdf:
+\[
+  f(x) = \frac{1}{\beta}e^{-\frac{1}{\beta}x}, \text{ }\text{ } 0 < x < \infty.
+\]
+
+We can obtain the cdf of *X* by integrating:
+\[
+  F(x) = \int_0^x \frac{1}{\beta}e^{-\frac{1}{\beta}t}dt = -e^{-\frac{1}{\beta}t}\Big{|}_0^x = 1-e^{-\frac{1}{\beta}x}.
+\]
+
+Note that we only use this if *x* is larger than 0. Otherwise, our cdf would be 0.  
+
+We know from homework #15 that $\small{E[X] = \mu = \beta}$ for an exponential distribution, and we know from our classnotes that $\small{Var[X] = \beta^2}$ so $\small{\sigma = \beta}$. Note that as in part (a), we can get the probability that $\small{\{\alpha \leq X \leq \beta\}}$ by integrating our pdf from $\small{\alpha}$ to $\small{\beta}$. We do this in a sligtly smarter way this time by noticing that in equation (1), $\small{\alpha = \mu - 1\sigma = \beta - \beta = 0}$ and that the $\small{\alpha}$ for both (2) and (3) will be negative. Thus we can simply use our cdf $\small{F(x)}$ with the $\small{\mu + 1\sigma, \mu+2\sigma, \mu + 3\sigma}$ as our *x* to obtain the probabilities we search for. This is:
+\[
+  Pr\{\mu - 1\sigma \leq X \leq \mu + 1\sigma\} = F(\mu+1\sigma) = F(2\beta) = 1 - e^{-\frac{1}{\beta}(2\beta)} = 1 - \frac{1}{e^2} \approx 0.865. \text{ }\text{ }\text{ (1)}
+\]
+\[
+  Pr\{\mu - 2\sigma \leq X \leq \mu + 2\sigma\} = F(\mu+2\sigma) = F(3\beta) = 1 - e^{-\frac{1}{\beta}(3\beta)} = 1 - \frac{1}{e^3} \approx 0.950. \text{ }\text{ }\text{ (2)}
+\]
+\[
+  Pr\{\mu - 3\sigma \leq X \leq \mu + 3\sigma\} = F(\mu+3\sigma) = F(4\beta) = 1 - e^{-\frac{1}{\beta}(4\beta)} = 1 - \frac{1}{e^4} \approx 0.982. \text{ }\text{ }\text{ (3)}
+\]
+

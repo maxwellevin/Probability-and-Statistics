@@ -1,0 +1,174 @@
+---
+title: 'Math 451 HW #25'
+author: "Maxwell Levin"
+date: "December 7, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1
+#### Roll two fair dice until the pair "(6,6)" is observed. Let *Y* denote the sum of all values that have been rolled. Find $\small\mathbf{E[Y]}$ and $\small\mathbf{Var[Y]}$.
+
+We can express $\small{Y}$ as 
+\[
+  Y = Y_1 + Y_2 + \dots + Y_{x-1} + Y_x,
+\]
+
+where *X* is the number of rolls until (6,6) is observed and $\small{Y_i}$ is the sum of a single two-dice roll. We know that $\small{X \sim Geometric(p=1/36)}$ and that $\small{E[X] = 1/p = 36}$ and $\small{Var[X] = (1-p)/p^2 = 1260}$.
+
+We can find $\small{E[Y]}$ by
+\[
+  E[Y] = E[E[Y|X]] = \sum_{all x} E[Y|X]f_X(x).
+\]
+
+Note that $\small{E[Y|X]}$ is given by
+\[
+  E[Y|X] = 12 + (x-1)\sum_{y=2}^{11} yf_Y(y),
+\]
+
+and that
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+$Y=y$       & $Y = 2$ & $Y = 3$ & $Y = 4$ & $Y = 5$ & $Y = 6$ & $Y = 7$ & $Y = 8$ & $Y = 9$ & $Y = 10$ & $Y = 11$\\ \hline
+$Pr\{Y=y\}$ & $1/35$ & $2/35$ & $3/35$ & $4/35$ & $5/35$  & $6/35$ & $5/35$ & $4/35$ & $3/35$ & $2/35$\\ \hline
+\end{tabular}
+\end{table}
+
+We can use this table to compute $\small{E[Y|X]}$. Doing so we get $\small{E[Y|X] = (x-1)\left(\frac{240}{35}\right) + 12}$. Thus we can calculate $\small{E[Y]}$ by 
+\[
+  E[Y] = \sum_{x=1}^{\infty}\left(\left(\frac{240}{35}\right)(x-1) + 12\right)\left(\frac{1}{36}\right)\left(\frac{35}{36}\right)^{x-1},
+\]
+\[
+  = \frac{240}{35}\sum_{x=1}^{\infty}x\frac{1}{36}\left(\frac{35}{36}\right)^{x-1} + \left(12 - \frac{240}{25}\right)\sum_{x=1}^{\infty}\frac{1}{36}\left(\frac{35}{36}\right)^{x-1},
+\]
+\[
+  = \frac{240}{35}E[X] + \left(12 - \frac{240}{25}\right)(1),
+\]
+\[
+  = 252.
+\]
+
+We now compute the variance by
+\[
+  Var[Y] = Var[E[Y|X]] + E[Var[Y|X]],
+\]
+\[
+  = Var\left[\frac{240}{35}(X-1) + 12\right] + E[Var[Y_1 + Y_2 + \dots + Y_{x-1} + 12| X]],
+\]
+\[
+  = \left(\frac{240}{35}\right)^2Var[X] + E[Var[Y_1|X] + Var[Y_2|X] + \dots + Var[Y_{x-1}|X] + 0],
+\]
+\[
+  = \left(\frac{240}{35}\right)^2(1260) + E[(X-1)Var[Y_1|X]],
+\]
+\[
+  = \frac{36\cdot 240^2}{35} + E[(X-1)(E[Y_1^2|X] - E[Y_1|X]^2)],
+\]
+\[
+  = \frac{36\cdot 240^2}{35} + E\left[(X-1)\left(\frac{1830}{35} - \left(\frac{240}{35}\right)^2\right)\right],
+\]
+\[
+  =  \frac{36\cdot 240^2}{35} + (E[X] - 1)\left(\frac{1830}{35} - \left(\frac{240}{35}\right)^2\right),
+\]
+\[
+  =  \frac{36\cdot 240^2}{35} + (35)\left(\frac{1830}{35} - \left(\frac{240}{35}\right)^2\right),
+\]
+\[
+  = 59430.
+\]
+
+## Question 2
+#### An urn contains 6 identical balls numbered 1 to 6. You randomly choose one ball at a time from the urn without replacement until the ball numbered 3 is selected. Let *W* denote the sum of the values on the selected balls. Find $\small\mathbf{E[W]}$ and $\small\mathbf{Var[W]}$. 
+
+I ran out of time to solve this problem for today, but I'll figure it out over the weekend so that I will be prepared if this comes up on the final exam.
+
+## Question 3
+#### Suppose that the random variable *Y* has a binomial distribution with *n* trials and success probability *X*, where *n* is a given constant and *X* is a uniform(0, 1) random variable.
+
+#### (a) Find $\small\mathbf{E[Y]}$ and $\small\mathbf{Var[Y]}$.
+
+Note that $\small{E[Y|X] = np = nX}$ and $\small{Var[Y|X] = np(1-p) = nX(1-X)}$. We can find $\small{E[Y]}$ by
+\[
+  E[Y] = E[E[Y|X]],
+\]
+\[
+  = E[np] = E[nX],
+\]
+\[
+  = \int_0^1 nxf_X(x)dx,
+\]
+\[
+  = n \int_0^1 xdx,
+\]
+\[
+  = \frac{1}{2}n.
+\]
+
+we now calculate variance by
+\[
+  Var[Y] = E[Var[Y|X]] + Var[E[Y|X]],
+\]
+\[
+  = E[nX(1-X)] + Var[nX],
+\]
+\[
+  = nE[X] - nE[X^2] + n^2Var[X],
+\]
+\[
+  = \frac{1}{2}n - n\int_0^1x^2dx + n^2\int_0^1x^2dx - n^2(E[X])^2,
+\]
+\[
+  = \frac{1}{2}n - \frac{1}{3}n + \frac{1}{3}n^2 - \frac{1}{4}n^2,
+\]
+\[
+  = \frac{1}{6}n + \frac{1}{12}n^2,
+\]
+\[
+  = \frac{1}{12}n(n+2).
+\]
+
+#### (b) Find the joint distribution of *X* and *Y*.
+
+Recall that
+\[
+  f_{X,Y}(x,y) = f_X(x)f_{Y|X}(y|X=x),
+\]
+\[
+  = {n\choose{y}}x^y(1-x)^{n-y}.
+\]
+
+#### (c) Find the marginal distribution of *Y*.
+
+We can find $\small{f_Y(y)}$ by: 
+\[
+  f_Y(y) = \int_0^1 f_{Y|X}(y|X=x)dx,
+\]
+\[
+  = \int_0^1 {n\choose{y}}x^y(1-x)^{n-y}dx,
+\]
+\[
+  = \int_0^1 \frac{n!}{y!(n-y)!}x^y(1-x)^{n-y}dx,
+\]
+\[
+  \frac{1}{n+1}\int_0^1 \frac{(n+1)!}{y!(n-y)!}x^y(1-x)^{n-y}dx.
+\]
+
+Recall that
+\[
+  1 = \int_0^1 \frac{\Gamma(s + t)}{\Gamma(s)\Gamma(t)}x^{s-1}(1-x)^{t-1}dx.
+\]
+
+Here we set $\small{s = y+1}$ to get $\small{\Gamma(s) = y!}$, $\small{t = n - y +1}$ to get $\small{\Gamma(t) = (n-y)!}$, and $\small{s+t=n+2}$ to get $\small{\Gamma(s+t)=(n+1)!}$. Doing so we see that
+\[
+  \frac{1}{n+1}\int_0^1 \frac{(n+1)!}{y!(n-y)!}x^y(1-x)^{n-y}dx = \frac{1}{n+1}\int_0^1\frac{\Gamma(s + t)}{\Gamma(s)\Gamma(t)}x^{s-1}(1-x)^{t-1}dx,
+\]
+
+I.E. that
+\[
+  f_Y(y) = \frac{1}{n+1}.
+\]

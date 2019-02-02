@@ -1,0 +1,51 @@
+---
+title: 'Math 451 HW #5'
+author: "Maxwell Levin"
+date: "September 14, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment=NA)
+```
+
+
+## Question 1.
+
+#### A closet contains $\small{n}$ pairs of shoes. If $\small{2r}$ shoes are chosen at random (Such that $\small{2r < n}$), what is the probability that there will be no matching pair in the sample?
+In thinking about this problem I found it helped to refer to Question 2 part (a) where we seek to find the probability of selecting no pairs of shoes with six individual shoe selections from 12 pairs of shoes. In this problem we have $\small{n}$ pairs of shoes ($\small{2n}$ shoes total) and we must select $\small{2r}$ shoes. Since we do not want any pairs, we must select $\small{2r}$ distinct types of shoes from our collection of $\small{n}$ distinct types of shoes and then for each type pick either the right shoe or the left shoe. We can do this in $\small{\binom{n}{2r}2^{2r}}$ ways. To get the probability we must divide by the total number of ways to pick $\small{2r}$ shoes from $\small{2n}$ distinct shoes. This  probability is
+\[
+  \frac{\binom{n}{2r}2^{2r}}{\binom{2n}{2r}}.
+\]
+
+
+
+## Question 2.
+
+#### In a closet there are 12 distinct pairs of shoes. If six shoes are selected at random, what is the probability of selecting: 
+
+
+#### (a) no complete pairs 
+Since there are 12 pairs of shoes there are 24 shoes total. This means that the number of ways of picking six shoes from this collection is $\small{\binom{24}{6}}$. Because we seek 6 distinct types of shoes, we have $\small{\binom{12}{6}}$ ways of picking the type of shoe. Within that we also have to select between a right shoe or a left shoe. Since we are picking this for 6 different types of shoes we have $\small{2^6}$ ways of doing this. Thus the probability that we will select six shoes without a single pair is:
+\[
+  \frac{\binom{12}{6} 2^6}{\binom{24}{6}}.
+\]
+
+#### (b) exactly one complete pair
+This time we see two shoes from one pair and 4 other distinct types of shoes. The number of ways that we can pick a single pair of shoes is $\small{\binom{12}{1}}$. After we pick this we have four remaining shoes that we require to be distinct. We have $\small{\binom{11}{4} 2^4}$ ways of doing this. Thus the probability that we will pick exactly one complete pair of shoes is
+\[
+  \frac{\binom{12}{1} \binom{11}{4} 2^4}{\binom{24}{6}}.
+\]
+
+#### (c) exactly two complete pairs
+Now we have two pairs of shoes so we first have to pick two distinct types of shoes from 12 types of shoes. We can do this in $\small{\binom{12}{2}}$ ways. Since we have already picked four shoes in two pairs, we now need two more shoes that are of unique types. We can do this in $\small{\binom{10}{2}2^2}$ ways. Thus the probability that we will pick exactly two pairs is
+\[
+  \frac{\binom{12}{2} \binom{10}{2} 2^2}{\binom{24}{6}}.
+\]
+
+#### (d) exactly three complete pairs?
+Finally, we deal with the case that we pick exactly three pairs of shoes. This means that all six shoes we pick will belong to a pair. Thus there are $\small{\binom{12}{3}}$ ways of doing this, i.e. the probability of picking three pairs of shoes is
+\[
+  \frac{\binom{12}{3}}{\binom{24}{6}}.
+\]
+

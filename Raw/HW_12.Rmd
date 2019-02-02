@@ -1,0 +1,127 @@
+---
+title: 'Math 451 HW #12'
+author: "Maxwell Levin"
+date: "October 17, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1.
+#### Roll seven balanced dice. Let $\small{Y}$ be the minimum value observed. Find the p.m.f. of $\small{Y}$ and $\small{E(Y)}$
+
+We attempt this problem with the assumption that order does matter. That is, rolling seven dice and getting (1, 2, 1, 1, 1, 1, 1) is difference than getting (2, 1, 1, 1, 1, 1, 1). To find the p.m.f. of $\small{Y}$ we have to consider the probabilities of getting a minimum roll of $\small{1, 2, \dots, 6}$. Note that the probability of getting any other value is 0 because it would be infeasible. Because we have six possible values for each of our seven dice, the total number of possible outcomes for our rolls is $\small{6^7}$.
+
+To get a minimum value of 1 we require at least one dice to have a value of 1. I found this deceptively difficult to do in a straightforward manner, so we instead calculate the number of ways that the minimum value is not 1. For this to happen all of our dice rolls must not be 1. The number of ways to roll seven dice and not get a 1 is $\small{5^7}$. Thus the number of ways to get a minimum value of 1 is $\small{6^7 - 5^7}$ and the probability is $\small{\frac{6^7 - 5^7}{6^7}}$. 
+
+To count the number of ways of getting a minimum value of 2 we subtract the number of ways of getting a minimum value greater than 2 from the number of ways of getting a minimum value greater than 1. We already found that $\small{5^7}$ is the number of ways you can roll seven dice and not see any 1s, so this is the number of ways that the minimum is greater than 1. To get a minimum greater than 2 we have to roll the seven dice and not see any 1s and not see any 2s. We can do this in $\small{4^7}$ ways. Thus the number of ways to get a minimum value of 2 is $\small{5^7 - 4^7}$ and the probability of this occurring is $\small{\frac{5^7 - 4^7}{6^7}}$. 
+
+To get the number of ways of having a minimum of 3 we take the number of ways of getting a minimum greater than 2 and subtract the number of ways of getting a minimum of 3. The number of ways of getting a minimum of 3 is $\small{3^7}$. Thus the number of ways of getting a minimum of 3 is $\small{4^7 - 3^7}$ and the probability of this occurring is $\small{\frac{4^7 - 3^7}{6^7}}$.
+
+We continue to follow this pattern to get the number of ways to get a minimum value of 4. That is, $\small{3^7 - 2^7}$ is the number of ways, and $\small{\frac{3^7 - 2^7}{6^7}}$. For a minimum value of 5 we have $\small{2^7 - 1^7}$ ways and a probability of $\small{\frac{2^7 - 1^7}{6^7}}$. For a minimum value of 6 we have just 1 way this can occur and a probability of $\small{\frac{1}{6^7}}$. 
+
+Combining all of these probabilities together into one table we get our p.m.f. $\small{f_Y(y)}$:
+\begin{table}[!h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+$Y = y$ & 1 & 2 & 3 & 4 & 5 & 6 \\ \hline
+$f_Y(y)$ & $\frac{6^7-5^7}{6^7}$ & $\frac{5^7-4^7}{6^7}$ & $\frac{4^7-3^7}{6^7}$ & $\frac{3^7-2^7}{6^7}$ & $\frac{2^7-1}{6^7}$ & $\frac{1}{6^7}$\\ \hline 
+\end{tabular}
+\end{table}
+
+To calculate the expected value, $\small{E(Y)}$, of $\small{Y}$, we compute the sum $\small{\sum_{y=1}^{6} y \cdot f_Y(y)}$. This is
+\[
+  1\left(\frac{6^7-5^7}{6^7}\right) + 2\left(\frac{5^7-4^7}{6^7}\right) + \dots + 6\left(\frac{1}{6^7}\right) \approx 1.346
+\]
+
+## Question 2.
+#### A *median* of a distribution is a value *m* such that $\small{Pr(X \leq m) \geq \frac{1}{2}}$ and $\small{Pr(X \geq m) \leq \frac{1}{2}}$. (If X is continuous, *m* satisfies $\small{\int_{-\infty}^m f(x)dx = \int_m^\infty f(x)dx = \frac{1}{2}}$.) Find the median of $\small{f(x) = 3x^2, 0 < x < 1}$. Also compute the expected value $\small{E(X)}$.
+
+We use the definition of a median as described in the problem: 
+\[
+  \int_{-\infty}^m f(x)dx = \frac{1}{2},
+\]
+
+substitute in $\small{f(x)}$, and make sure our lower bound agrees with the bounds on *x* to get
+\[
+  \int_{0}^m 3x^2dx = \frac{1}{2}.
+\]
+
+Now we solve for *m*:
+\[
+  x^3 \Big|_0^m = m^3 =  \frac{1}{2},
+\]
+\[
+  m = \sqrt[3]{\frac{1}{2}}.
+\]
+
+Thus the median of $\small{f(x)}$ is $\small{\sqrt[3]{\frac{1}{2}}}$.
+
+To calculate the expected value, $\small{E(X)}$ of our distribution, we use the fact that
+\[
+  E(X) = \int_{-\infty}^\infty xf_X(x)dx.
+\]
+
+Here we have 
+\[
+  E(X) = \int_{0}^1 3x^3dx = \frac{3}{4}x^4\Big|_0^1 = \frac{3}{4}.
+\]
+
+## Question 3.
+#### Compute $\small{E[X]}$ and $\small{Var[X]}$ for $\small{X \sim f_X(x) = ax^{a-1}, 0 < x < 1, a > 0}$. Also compute the median of the distribution.
+
+To compute $\small{E(X)}$ given $\small{f_X(x)}$ we take 
+\[
+  E(X) = \int_{-\infty}^\infty xf_X(x)dx.
+\]
+
+In our case we have $\small{f_X(x) = ax^{a-1}}$ where $\small{x \in (0, 1)}$, so this becomes
+\[
+  E(X) = \int_{0}^{1} x(ax^{a-1})dx,
+\]
+\[
+  = \int_{0}^{1} ax^{a}dx = \frac{a}{a+1}x^{a+1} \Big|_0^1,
+\]
+\[
+  E(X) = \frac{a}{a+1}.
+\]
+
+To calculate variance we first need to find $\small{E(X^2)}$. We do this by:
+\[
+  E(X^2) = \int_{0}^{1} x^2(ax^{a-1})dx,
+\]
+\[
+   = \int_{0}^{1} ax^{a+1}dx = \frac{a}{a+2}x^{a+2} \Big|_0^1,
+\]
+\[
+  E(X^2) = \frac{a}{a+2}.
+\]
+
+Recall Theorem 1 from class notes 16:
+\[
+  Var(X) = E(X^2) - E(X)^2.
+\]
+
+We then have 
+\[
+  Var(X) = \frac{a}{a+2} - \left(\frac{a}{a+1}\right)^2.
+\]
+
+To calculate the median of $\small{f_X(x)}$ we use the fact that 
+\[
+  \int_{-\infty}^m f(x)dx = \frac{1}{2}.
+\]
+
+Here we have 
+\[
+  \int_{0}^m ax^{a-1}dx = \frac{1}{2},
+\]
+\[
+  x^a\Big|_0^m = \frac{1}{2},
+\]
+\[
+  m = \sqrt[a]{\frac{1}{2}}.
+\]
