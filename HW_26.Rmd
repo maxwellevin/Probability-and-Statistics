@@ -1,0 +1,287 @@
+---
+title: 'Math 451 HW #26'
+author: "Maxwell Levin"
+date: "December 9, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1
+#### Let *X* and *Y* be two independent uniform distributions on the interval (0,2). Let $\small\mathbf{U = X + 2Y}$, and let $\small\mathbf{V = 2X-Y}$.
+
+#### (a) Find the joint pdf $\small\mathbf{f_{U,V}(u,v)}$ of *U* and *V*. (Be sure to write the support)
+
+We first note that:
+\[
+  X = U - 2Y,
+\]
+\[
+  Y = 2X-V.
+\]
+
+We now find *X* and *Y* in terms of just *U* and *V*:
+\[
+  V = 2(U - 2Y) - Y,
+\]
+\[
+  V = 2U - 5Y,
+\]
+\[
+  Y = \frac{2U - V}{5},
+\]
+\[
+  U = X + 2(2X - V),
+\]
+\[
+  U = 5X - 2V,
+\]
+\[
+  X = \frac{U + 2V}{5}.
+\]
+
+We now compute the Jacobian *J* of our system by:
+\[
+  J = 
+  det
+  \left[
+  \begin{array}{cc}
+  \frac{\partial x}{\partial u} & \frac{\partial x}{\partial v} \\[2mm]
+  \frac{\partial y}{\partial u} & \frac{\partial y}{\partial v} \\[2mm]
+  \end{array}
+  \right],
+\]
+\[
+  = 
+  det
+  \left[
+  \begin{array}{cc}
+  \frac{1}{5} & \frac{2}{5} \\[2mm]
+  \frac{2}{5} & -\frac{1}{5} \\[2mm]
+  \end{array}
+  \right]
+  = -\frac{1}{25} - \frac{4}{25} = -\frac{1}{5}.
+\]
+
+We also note that since *X* and *Y* are independent $\small{f_{X,Y}(x,y) = f_X(x)f_Y(y) = \frac{1}{4}}$. Thus we know that $\small{f_{U,V}(u,v)}$ is given by
+\[
+  f_{U,V}(u,v) = f_{X,Y}\left(\frac{U + 2V}{5}, \frac{2U-V}{5}\right)\left|-\frac{1}{5}\right|,
+\]
+\[
+  f_{U,V}(u,v) = \frac{1}{20}.
+\]
+
+Note that this only makes sense when
+\[
+  0 < \frac{U + 2V}{5}, \frac{2U-V}{5} < 2,
+\]
+
+i.e.
+\[
+  0 < U+2V < 10,
+\]
+\[
+  0 < 2U-V < 10.
+\]
+
+#### (b) Find the marginal pdf $\small\mathbf{f_U(u)}$ of *U*.
+
+We can find this by integrating out *V* from the joint pdf. Note that our support for the joint pdf is the area bounded by the four lines:
+\[
+  U+2V=0: V = -\frac{1}{2}U,
+\]
+\[
+  U+2V=10: V = 5-\frac{1}{2}U,
+\]
+\[
+  2U-V=0: V=2U,
+\]
+\[
+  2U-V=10: V=2U-10.
+\]
+
+Thus we have 
+\[
+  f_U(u) = 
+  \left\{
+  \begin{array}{ll}
+  0, & \text{if } u \notin (0, 6); \\[2mm]
+  \int_{-\frac{1}{2}u}^{2u}\frac{1}{20}dv, & \text{if } u \in (0,2); \\[2mm]
+  \int_{-\frac{1}{2}u}^{5-\frac{1}{2}u}\frac{1}{20}dv, & \text{if } u \in (2,4); \\[2mm]
+  \int_{2u - 10}^{5-\frac{1}{2}u}\frac{1}{20}dv, & \text{if } u \in (4,6). \\[2mm]
+  \end{array}
+  \right.
+\]
+\[
+  f_U(u) = 
+  \left\{
+  \begin{array}{ll}
+  0, & \text{if } u \notin (0, 6); \\[2mm]
+  \frac{1}{8}u, & \text{if } u \in (0,2); \\[2mm]
+  \frac{1}{4}, & \text{if } u \in (2,4); \\[2mm]
+  \frac{3}{4}-\frac{1}{8}u, & \text{if } u \in (4,6). \\[2mm]
+  \end{array}
+  \right.
+\]
+
+
+#### (c) Find the marginal pdf $\small\mathbf{f_V(v)}$ of *V*.
+
+We now look at the area bounded by the four lines:
+\[
+  V = -\frac{1}{2}U: U = -2V,
+\]
+\[
+  V = 5-\frac{1}{2}U: U = 10 - 2V,
+\]
+\[
+  V=2U: U = \frac{1}{2}V,
+\]
+\[
+  V=2U-10: U = \frac{1}{2}V + 5.
+\]
+
+Note this is the same area as before, but we've solved for *U* instead of *V* so that we can look at horizontal distances for our bounds of integration. I would make a plot for this, but it's near the end of the semester and my time is short. We compute $\small{f_V(v)}$ by
+\[
+  f_U(u) = 
+  \left\{
+  \begin{array}{ll}
+  0, & \text{if } v \notin (-2,4); \\[2mm]
+  \int_{-2v}^{\frac{1}{2}v+5}\frac{1}{20}du, & \text{if } v \in (-2,0); \\[2mm]
+  \int_{\frac{1}{2}v}^{\frac{1}{2}v+5}\frac{1}{20}du, & \text{if } v \in (0,2); \\[2mm]
+  \int_{\frac{1}{2}v}^{10-2v}\frac{1}{20}du, & \text{if } v \in (2,4). \\[2mm]
+  \end{array}
+  \right.
+\]
+\[
+  f_U(u) = 
+  \left\{
+  \begin{array}{ll}
+  0, & \text{if } v \notin (-2,4); \\[2mm]
+  \frac{1}{8}v + \frac{1}{4}, & \text{if } v \in (-2,0); \\[2mm]
+  \frac{1}{4}, & \text{if } v \in (0,2); \\[2mm]
+  \frac{1}{2}-\frac{1}{8}v, & \text{if } v \in (2,4). \\[2mm]
+  \end{array}
+  \right.
+\]
+
+
+#### (d) Find $\small\mathbf{Cov(U,V)}$.
+
+Note that this is equivalent to:
+\[
+  Cov(X+2Y, 2X-Y) = Cov(X,2X) + Cov(X,-Y) + Cov(2Y, 2X) + Cov(2Y,-Y),
+\]
+\[
+  = 2Var[X] + 0 + 0 - 2Var[Y],
+\]
+\[
+  = 2Var[X] - 2Var[X],
+\]
+\[
+  = 0.
+\]
+
+Thus the covariance is 0.
+
+#### (e) Are *U* and *V* independent? Justify your answer.
+
+No. They would be independent if 
+\[
+  f_{U,V}(u,v) = f_U(u)f_V(v)
+\]
+
+for all *u* and *v* in our support. However, consider the case where $\small{2 < u < 4}$ and $\small{0 < v < 2}$. We then have
+\[
+  f_{U,V}(u,v) = \frac{1}{20},
+\]
+\[
+  f_U(u)f_V(v) = \left(\frac{1}{4}\right)\left(\frac{1}{4}\right) \neq \frac{1}{20}.
+\]
+
+Thus they are not independent.
+
+
+## Question 2
+#### Alice and Bob go fishing. On a typical fishing trip, the time *X* in hours until Alice catches her first fish can be modelled by an exponential distribution with mean $\small\mathbf{\beta_A}$ hours/fish, and the time *Y* in hours until Bob catches his first fish can be modelled by an exponential distribution with mean $\small\mathbf{\beta_B}$ hours/fish. Assume their fishing times *X* and *Y* are independent. Define Alice's waiting time *W* as follows:
+\[
+  W = 
+  \left\{
+  \begin{array}{ll}
+  0,  & \text{if } X > Y; \\
+  Y - X,  & \text{if } X < Y. \\
+  \end{array}
+  \right.
+\]
+
+#### Find the cdf of *W*.
+
+Note that
+\[
+  f_{X,Y}(x,y) = f_X(x)f_Y(y) = \frac{1}{\beta_A}e^{-x/\beta_A} \frac{1}{\beta_B}e^{-y/\beta_B}, \text{ } 0 < x,y < \infty 
+\]
+
+because *X* and *Y* are independent. Also recall from Test #3 that we found
+\[
+  Pr\{X < Y\} = \frac{\beta_A}{\beta_A + \beta_B}.
+\]
+
+Thus we have
+\[
+  Pr\{X > Y\} = 1 - Pr\{X < Y\} = \frac{\beta_B}{\beta_A + \beta_B}.
+\]
+
+Note that this probability is equivalent to $\small{Pr\{W = 0\}}$. We now compute $\small{Pr\{W>0\}}$ by
+\[
+  Pr\{W>0\} = Pr\{Y < X + w\},
+\]
+\[
+  = \int_0^\infty \int_x^{x+w} f_{X,Y}(x,y)dydx,
+\]
+\[
+  = \int_0^\infty \frac{1}{\beta_A}e^{-x/\beta_A} \int_x^{x+w} \frac{1}{\beta_B}e^{-y/\beta_B}dydx,
+\]
+\[
+  = \int_0^\infty \frac{1}{\beta_A}e^{-x/\beta_A} \left(-e^{-y/\beta_B}\Big{|}_x^{x+w}\right)dx,
+\]
+\[
+  = = \int_0^\infty \frac{1}{\beta_A}e^{-x(1/\beta_A + 1/\beta_B)}\left(1 - e^{-w/\beta_B}\right)dx,
+\]
+\[
+  = \left(-\frac{1}{\beta_A(1/\beta_A + 1/\beta_B)}e^{-x(1/\beta_A + 1/\beta_B)}\Big{|}_0^\infty \right)(1-e^{-w/\beta_B}),
+\]
+\[
+  = \frac{\beta_B}{\beta_A + \beta_B}(1-e^{-w/\beta_B}).
+\]
+
+
+
+Note that our cdf of *W* is given by
+\[
+  F_W(w) = 
+  \left\{
+  \begin{array}{ll}
+  0,  & \text{if } w < 0; \\
+  Pr\{W=0\},  & \text{if } w = 0; \\
+  Pr\{W=0\} + Pr\{W>0\}, & \text{if } w > 0.\\
+  \end{array}
+  \right.
+\]
+
+\[
+  F_W(w) = 
+  \left\{
+  \begin{array}{ll}
+  0,  & \text{if } w < 0; \\
+  \frac{\beta_B}{\beta_A + \beta_B},  & \text{if } w = 0; \\
+  \frac{\beta_B}{\beta_A + \beta_B} + \frac{\beta_B}{\beta_A + \beta_B}(1-e^{-w/\beta_B}), & \text{if } w > 0.\\
+  \end{array}
+  \right.
+\]
+
+
+
+
+

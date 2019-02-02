@@ -1,0 +1,115 @@
+---
+title: 'Math 451 HW #24'
+author: "Maxwell Levin"
+date: "November 21, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1
+#### You roll three fair dice. Let *X* be the minimum and *Y* be the median. 
+
+#### (a) Find $\small\mathbf{E[Y | X=3]}$.
+
+Recall from our Homework #21 that we found the conditional probability of *Y* given $\small{X=3}$ to be
+\[
+  f_{Y|X}(y | X=3) =
+  \left\{
+  \begin{array}{ll}
+  10/37, &   \text{ if } y = 3; \\
+  15/37, &   \text{ if } y = 4; \\
+  9/37, &   \text{ if } y = 5; \\
+  3/37, &   \text{ if } y = 6; \\
+  0, &   \text{ otherwise.} \\
+  \end{array}
+  \right.
+\]
+
+We can use this to calculate $\small{E[Y | X=3]}$ by:
+\[
+  E[Y | X=3] = 3\left(\frac{10}{37}\right) + 4\left(\frac{15}{37}\right)+ 5\left(\frac{9}{37}\right) + 6\left(\frac{3}{37}\right),
+\]
+\[
+  = \frac{153}{37} \approx 4.135
+\]
+
+#### (b) Find $\small\mathbf{Var[Y | X=3]}$.
+
+We can calculate the variance directly by:
+\[
+  Var[y|X=3] = \left(3-\frac{153}{37}\right)^2\left(\frac{10}{37}\right) + \left(4-\frac{153}{37}\right)^2\left(\frac{15}{37}\right) + \left(5-\frac{153}{37}\right)^2\left(\frac{9}{37}\right) + \left(6-\frac{153}{37}\right)^2\left(\frac{3}{37}\right),
+\]
+\[
+  \approx 0.820.
+\]
+
+
+## Question 2
+#### Let *X* and *Y* be the life spans (in hours) of two electronic devices, and their joint p.d.f. is given below:
+\[
+  f_{X, Y}(x, y) =
+  \left\{
+  \begin{array}{ll}
+  6e^{-x-2y}, & \text{ if } 0 < x < y < \infty; \\
+  0, &  \text{ otherwise.} \\
+  \end{array}
+  \right.
+\]
+
+#### (a) Find $\small\mathbf{E[Y | X=3]}$.
+
+Recall from Homework #20 that we found 
+\[
+  f_{Y|X}(y, X=x) = 
+  \left\{
+  \begin{array}{ll}
+  2e^{2x-2y}, & \text{ if } 0 < x < y < \infty; \\
+  0, & \text{ otherwise.} \\
+  \end{array}
+  \right.
+\]
+
+To calculate $\small{E[y|X=3]}$ we can take:
+\[
+  \int_3^\infty y f_{Y|X}(y | X=3)dy = \int_3^\infty 2ye^{2(3)-2y}dy,
+\]
+
+To solve this we use integration by parts:
+\[
+  = -ye^{6 - 2y}\Big{|}_3^\infty - \int_3^\infty -e^{6-2y}dy,
+\]
+\[
+  = 3 + \left(-\frac{1}{2}e^{6-2y}\right)\Big{|}_3^\infty
+\]
+\[
+  = 3.5.
+\]
+
+Thus
+\[
+  E[y|X=3] = 3.5.
+\]
+
+
+#### (b) Find $\small\mathbf{Var[Y | X=3]}$.
+
+To calculate $\small{Var[y|X=3]}$ we can use the fact that $\small{Var[y|X=3] = E[y^2 | X=3] - (E[y|X=3])^2 }$. We first calculate $\small{E[y^2|X=3]}$ by using a neat integration by parts trick that a classmate showed me which allows us to perform a series of integration by parts steps in a single step:
+\[
+  E[y^2|X=3] = \int_3^\infty 2y^2e^{6-2y}dy,
+\]
+\[
+  = -\frac{1}{2}(2)y^2e^{6-2y}\Big{|}_3^\infty - \frac{1}{4}(4)ye^{6-2y}\Big{|}_3^\infty - \frac{1}{8}(4)e^{6-2y}\Big{|}_3^\infty,
+\]
+\[
+  = 9 + 3 + \frac{1}{2} = 12.5.
+\]
+
+Now we take 
+\[
+  Var[y|X=3] = 12.5 - (3.5)^2 = \frac{1}{4}.
+\]
+
+

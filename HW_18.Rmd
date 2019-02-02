@@ -1,0 +1,96 @@
+---
+title: 'Math 451 HW #18'
+author: "Maxwell Levin"
+date: "November 7, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1
+
+#### Let *X* be a $\small{Gamma(\alpha, \beta)}$ random variable. Compute the skewness measure:
+\[
+\gamma_1 = E\left[\frac{(X - \mu_X)^3}{\sigma_X^3} \right]
+\]
+
+Before we begin we note that 
+\[
+  E[X] = \mu_X = \alpha\beta,
+\]
+\[
+  Var[X] = \sigma_X^2 = \alpha\beta^2, 
+\]
+
+and that
+\[
+  E[X^2] = (\alpha + 1)\alpha\beta^2,
+\]
+\[
+  E[X^3] = (\alpha + 2)(\alpha + 1)\alpha\beta^3.
+\]
+
+We now begin to compute the skewness measure:
+\[
+  \gamma_1 = \frac{1}{\sigma^2}E[(X - \mu)^3],
+\]
+\[
+  = \frac{1}{\sigma^3}E[X^3 - 3\mu X^2 + 3 \mu^2 X - \mu^3],
+\]
+\[
+  = \frac{1}{\sigma^3}\left(E[X^3] - 3\mu E[X^2] + 3\mu^2 E[X] - \mu^3 \right),
+\]
+\[
+  = \frac{1}{\sigma^3} \left[(\alpha + 2)(\alpha + 1)\alpha\beta^3 -3(\alpha\beta)(\alpha + 1)\alpha\beta^2 + 3(\alpha\beta)^2(\alpha\beta) - (\alpha\beta)^3\right],
+\]
+\[
+ = \frac{1}{\sigma^3}[\alpha^3\beta^3 + 3\alpha^2\beta^3 + 2\alpha\beta^3 - 3\alpha^3\beta^3 0 3\alpha^2\beta^3 + 2\alpha^3\beta^3 ],
+\]
+\[
+  = \frac{1}{(\alpha\beta)^{3/2}}[2\alpha\beta^3],
+\]
+\[
+  = \frac{2}{\sqrt{\alpha}}.
+\]
+
+Thus we have computed our skewness measure:
+\[
+  \gamma_1 = \frac{2\sqrt{\alpha}}{\alpha}.
+\]
+
+## Question 2
+#### A fair coin is tossed five times. Let *X* be the number of heads observed from the first three tosses, and let *Y* be the number of heads observed from the last three tosses. 
+
+#### (a) Use a two-way table to show the joint distribution of *X* and *Y*.
+
+Note that since there are only five tosses of the fair coin and *X* and *Y* measure the number of heads in the first three and last three tosses respectively, there is some overlap on toss number three. I kept this in mind as I thought about each entry in the following two-way table:
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+$ $ & $ X = 0$ & $X = 1$ & $X = 2$ & $X = 3$\\ \hline
+$Y = 0$ & $1/2^5$ & $2/2^5$ & $1/2^5$ & $0$\\ \hline
+$Y = 1$ & $2/2^5$ & $5/2^5$ & $4/2^5$ & $1/2^5$\\ \hline
+$Y = 2$ & $1/2^5$ & $4/2^5$ & $5/2^5$ & $2/2^5$\\ \hline
+$Y = 3$ & $0$ & $1/2^5$ & $2/2^5$ & $1/2^5$\\ \hline
+\end{tabular}
+\end{table}
+
+
+#### (b) Find the marginal distribution of *Y*. 
+
+We can find the marginal distribution of *Y* by summing up the elements in each row of our two-way table. Doing this we get the following marginal distribution of *Y*:
+\[
+  f_Y(y) = \left\{
+          \begin{array}{lllll}
+             1/2^3, & \text{if }\text{ } y = 0; \\[1mm]
+             3/2^3, & \text{if }\text{ } y = 1; \\[1mm]
+             3/2^3, & \text{if }\text{ } y = 2; \\[1mm]
+             1/2^3, & \text{if }\text{ } y = 3; \\[1mm]
+              0, & \text{otherwise.} \\[1mm]
+          \end{array} 
+          \right.
+\]

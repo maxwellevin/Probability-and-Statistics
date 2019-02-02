@@ -1,0 +1,526 @@
+---
+title: 'Math 451 Test #2'
+author: "Maxwell Levin"
+date: "October 26, 2018"
+header-includes:
+  - \usepackage{tikz}
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 1 (26 points)
+#### Randomly generate an ordered pair (x, y) inside the quadrilateral with vertices (-2, 2), (2, 0), (4, 4), and (0, 6). Let *X* be the random variable denoting the *x*-coordinate of the random ordered pair.
+
+#### (a) (6 points) Find the probability density function $\small{f_X(x)}$ of *X*.
+
+We can use the *tikz* package to plot our quadrilateral:
+\begin{center}
+\begin{tikzpicture}
+      \draw[->] (-3,0) -- (5,0) node[right] {$x$};
+      \draw[->] (0,-1) -- (0,7) node[above] {$y$};
+      \draw[scale=1,line width=2,domain=-2:2,smooth,variable=\x,black] plot ({\x },{-0.5*\x + 1});
+      \draw[scale=1,line width=2,domain=-2:0,smooth,variable=\x,black] plot ({\x },{2*\x + 6});
+      \draw[scale=1,line width=2,domain=2:4,smooth,variable=\x,black] plot ({\x },{2*\x - 4});
+      \draw[scale=1,line width=2,domain=0:4,smooth,variable=\x,black] plot ({\x },{-0.5*\x + 6});
+      \draw[help lines] (-3, -1) grid (5,7);
+\end{tikzpicture}
+\end{center}
+
+Here we notice that the probability of generating an ordered pair(x, y) inside the quadrilateral is proportional to the height within the quadrilateral at a given *x*-coordinate. We also note that we have to break up our support of *X* into three parts: $\small{-2 \leq x < 0}$, $\small{0 \leq x < 2}$, and $\small{2 \leq x \leq 4}$. Using these supports we see that: 
+\[
+  f_X(x)=
+  \left\{
+  \begin{array}{lll}
+      k\left((2x + 6) - \left(-\frac{1}{2}x + 1\right)\right), &  \text{if } -2 \leq x < 0 ; \\[1mm]
+      k\left(\left(-\frac{1}{2}x + 6\right) - (-\frac{1}{2}x + 1)\right), &  \text{if } 0 \leq x < 2 ;\\[1mm]
+      k\left(\left(-\frac{1}{2}x + 6\right) - (2x - 4)\right), &  \text{if } 2 \leq x \leq 4 ; \\[1mm]
+      0, & \text{otherwise.} \\[1mm]
+  \end{array} 
+  \right.
+\]
+
+We can simplify this to get
+\[
+  f_X(x)=
+  \left\{
+  \begin{array}{lll}
+      k\left( \frac{5}{2}x + 5 \right), &  \text{if } -2 \leq x < 0 ; \\[1mm]
+      5k, &  \text{if } 0 \leq x < 2 ;\\[1mm]
+      k\left(-\frac{5}{2}x + 10  \right), &  \text{if } 2 \leq x \leq 4 ; \\[1mm]
+      0, & \text{otherwise.} \\[1mm]
+  \end{array} 
+  \right.
+\]
+
+Now we use the fact that
+\[
+  1 = \int_{-\infty}^\infty f_X(x)dx
+\]
+to find our proportionality constant, *k*: 
+\[
+  1 = \int_{-2}^0 k\left( \frac{5}{2}x + 5 \right)dx + \int_{0}^2 5kdx + \int_{2}^4  k\left(-\frac{5}{2}x + 10  \right) dx,
+\]
+\[
+  1 = k \left( \int_{-2}^0 \frac{5}{2}x + 5 dx + \int_{0}^2 5 dx + \int_{2}^4 -\frac{5}{2}x + 10dx \right),
+\]
+\[
+  1 = k\left(
+  \left(\frac{5}{4}x^2 + 5x\right) \Big{|}_{-2}^0 +
+  \left(5x\right) \Big{|}_0^2 + 
+  \left(-\frac{5}{4}x^2 + 10x\right) \Big{|}_2^4
+  \right),
+\]
+\[
+  1 = k\left((-5 + 10) + (10) + (-20 + 40 - (-5 + 20))\right)
+\]
+\[
+  k = \frac{1}{20}.
+\]
+
+Note that this value of *k* makes sense because it is the inverse of the area of our quadrilateral. We substitute *k* back into our p.d.f. $\small{f_X(x)}$ to find 
+\[
+  f_X(x)=
+  \left\{
+  \begin{array}{lll}
+      \frac{1}{20}\left( \frac{5}{2}x + 5 \right), &  \text{if } -2 \leq x < 0 ; \\[1mm]
+      \frac{5}{20}, &  \text{if } 0 \leq x < 2 ;\\[1mm]
+      \frac{1}{20}\left(-\frac{5}{2}x + 10  \right), &  \text{if } 2 \leq x \leq 4 ; \\[1mm]
+      0, & \text{otherwise,} \\[1mm]
+  \end{array} 
+  \right.
+\]
+\[
+  f_X(x)=
+  \left\{
+  \begin{array}{lll}
+      \frac{1}{8}x + \frac{1}{4}, &  \text{if } -2 \leq x < 0 ; \\[2mm]
+      \frac{1}{4}, &  \text{if } 0 \leq x < 2 ;\\[2mm]
+      -\frac{1}{8}x + \frac{1}{2}, &  \text{if } 2 \leq x \leq 4 ; \\[2mm]
+      0, & \text{otherwise.} \\[2mm]
+  \end{array} 
+  \right.
+\]
+
+
+#### (b) (6 points) Find and *graph* the cumulative distribution function $\small{F_X(x)}$ of *X*. 
+
+Recall that we define the c.d.f. $\small{F_X(x)}$ to be the probability that $\small{X \leq x}$ for some $\small{x \in \mathbb{R}}$. Since $\small{X \sim f_X(x)}$, we can express $\small{F_X(x)}$ as the integral
+\[
+  F_X(x) = \int_{-\infty}^xf_X(t)dt.
+\]
+
+Since our $\small{f_X(x)}$ is a piecewise function this becomes:
+\[
+  F_X(x)=
+  \left\{
+  \begin{array}{lll}
+      0, & \text{if } x < -2 ; \\[2mm]
+      \int_{-2}^x  \frac{1}{8}t + \frac{1}{4}dt, &  \text{if } -2 \leq x < 0 ; \\[2mm]
+      \int_{-2}^0  \frac{1}{8}t + \frac{1}{4}dt + \int_0^x \frac{1}{4}dt, &  \text{if } 0 \leq x < 2 ;\\[2mm]
+      \int_{-2}^0  \frac{1}{8}t + \frac{1}{4}dt + \int_0^2 \frac{1}{4}dt + \int_2^x -\frac{1}{8}t + \frac{1}{2}dt, &  \text{if } 2 \leq x \leq 4 ; \\[2mm]
+      1, & \text{if } 4 < x.\\[2mm]
+  \end{array} 
+  \right.  
+\]
+
+We can simplify this significantly to get:
+\[
+  F_X(x)=
+  \left\{
+  \begin{array}{lll}
+      0, & \text{if } x < -2 ; \\[2mm]
+      \frac{1}{16}(x+2)^2, &  \text{if } -2 \leq x < 0 ; \\[2mm]
+      \frac{1}{4}x + \frac{1}{4}, &  \text{if } 0 \leq x < 2 ;\\[2mm]
+      -\frac{1}{16}x(x-8), &  \text{if } 2 \leq x \leq 4 ; \\[2mm]
+      1, & \text{if } 4 < x.\\[2mm]
+  \end{array} 
+  \right.  
+\]
+
+We can plot this using the *tikz* package:
+
+\begin{center}
+\begin{tikzpicture}
+      \draw[->] (-3,0) -- (5,0) node[right] {$x$};
+      \draw[->] (0,-1) -- (0,2) node[above] {$y$};
+      \draw[scale=1,line width=2,domain=-3:-2,smooth,variable=\x,black] plot ({\x},{0});
+      \draw[scale=1,line width=2,domain=-2:0,smooth,variable=\x,black] plot ({\x},{(1/16)*(\x + 2)^2});
+      \draw[scale=1,line width=2,domain=0:2,smooth,variable=\x,black] plot ({\x},{\x/4 + 1/4});
+      \draw[scale=1,line width=2,domain=2:4,smooth,variable=\x,black] plot ({\x},{(-1/16)*\x*(\x-8)});
+      \draw[scale=1,line width=2,domain=4:5,smooth,variable=\x,black] plot ({\x},{1});
+      \draw[help lines] (-3,-1) grid (5,2);
+\end{tikzpicture}
+\end{center}
+
+#### (c) (3 points) Find *E(X)*.
+
+From the definition of the expected value for a continuous random variable we know that
+\[
+  E[X] = \int_{-\infty}^\infty xf_X(x)dx.
+\]
+
+For our $\small{f_X(x)}$ this becomes
+\[
+  E[X] = \int_{-2}^0 \frac{1}{8}x^2 + \frac{1}{4}xdx + \int_0^2 \frac{1}{4}xdx + \int_2^4\frac{1}{2}x - \frac{1}{8}x^3dx,
+\]
+\[
+  = \left(\frac{1}{24}x^3 + \frac{1}{8}x^2 \right)\Big{|}_{-2}^0 +
+    \left(\frac{1}{8}x^2\right)\Big{|}_0^2 +
+    \left(\frac{1}{4}x^2 - \frac{1}{24}x^3 \right)\Big{|}_2^4,
+\]
+\[
+  = \frac{8}{24} - \frac{4}{8} + \frac{4}{8} + \frac{16}{4} - \frac{64}{24} - \frac{4}{4} = \frac{8}{24},
+\]
+\[
+  E[X] = 1
+\]
+
+#### (d) (3 points) Find the 60th percentile of *X*. That is, find the cutoff *c* such that Pr\{$\small{X \leq c}$\} = 0.6.
+
+We search for and *c* such that 
+\[
+  0.6 = F_X(x).
+\]
+
+Note that $\small{F_X(0) = \frac{1}{4} < 0.6}$ and $\small{F_X(2) = \frac{3}{4} > 0.6}$, so we search for *c* between 0 and 2. I.e. we have
+\[
+  0.6 = \frac{1}{4}c + \frac{1}{4},
+\]
+\[
+  c = 1.4.
+\]
+
+Thus our 60th percentile of *X* is 1.4.
+
+#### (e) (8 points) Let $\small{Z = X^2}$. Find the probability density function $\small{f_Z(z)}$ of $\small{Z}$. Clearly specify the domain of $\small{f_Z(z)}$.
+
+Recall that our p.m.f. $\small{f_X(x)}$ is:
+\[
+  f_X(x)=
+  \left\{
+  \begin{array}{lll}
+      \frac{1}{8}x + \frac{1}{4}, &  \text{if } -2 \leq x < 0 ; \\[2mm]
+      \frac{1}{4}, &  \text{if } 0 \leq x < 2 ;\\[2mm]
+      -\frac{1}{8}x + \frac{1}{2}, &  \text{if } 2 \leq x \leq 4 ; \\[2mm]
+      0, & \text{otherwise.} \\[2mm]
+  \end{array} 
+  \right.
+\]
+
+Here we have that the support of $\small{X}$ is $\small{S_X = \{(-2, 0), (0, 2), (2, 4)\}}$. We let $\small{A_1 = (-2, 0)}$, $\small{A_2 = (0, 2)}$, and $\small{A_3 = (2, 4)}$ represent our support of $\small{X}$. Note that $\small{A_1}$ and $\small{A_2}$ overlap for $\small{Z = X^2}$. We'll keep this in mind for later. We know from Theorem 1 in Class 14 that 
+\[
+  f_Z(z) = f_X(g^{-1}(z)) \left| \frac{dx}{dz} \right|,
+\]
+
+where $\small{X = g^{-1}(Z) = \pm \sqrt{Z}}$ and $\small{\frac{dx}{dy} = \pm \frac{1}{2}\frac{1}{\sqrt{z}}}$. We now compute $\small{f_Z(z)}$ on $\small{A_1, A_2, \text{ and } A_3}$. For $\small{A_1}$ we have $\small{g^{-1}(z) = -\sqrt{z}}$ and $\small{\frac{dx}{dy} = -\frac{1}{2}\frac{1}{\sqrt{z}}}$. We then have:
+\[
+  f_Z(z) = f_X(-\sqrt{z})\left| -\frac{1}{2}\frac{1}{\sqrt{z}} \right|,
+\]
+\[
+  = \left(\frac{1}{8}(-\sqrt{z}) + \frac{1}{4}\right)\left(\frac{1}{2}\frac{1}{\sqrt{z}}\right),
+\]
+\[
+  = \frac{1}{16}\left(\frac{2\sqrt{z}}{z} - 1\right).
+\]
+
+For $\small{A_2}$ we have $\small{g^{-1}(z) = \sqrt{z}}$ and $\small{\frac{dx}{dy} = \frac{1}{2}\frac{1}{\sqrt{z}}}$. We then have:
+\[
+  f_Z(z) = f_X(\sqrt{z})\left|\frac{1}{2}\frac{1}{\sqrt{z}} \right|,
+\]
+\[
+   = \frac{1}{4}\left(\frac{1}{2}\frac{1}{\sqrt{z}} \right),
+\]
+\[
+  = \frac{\sqrt{z}}{8z}.
+\]
+
+For $\small{A_3}$ we have $\small{g^{-1}(z) = \sqrt{z}}$ and $\small{\frac{dx}{dy} = \frac{1}{2}\frac{1}{\sqrt{z}}}$. We then have:
+\[
+  f_Z(z) = f_X(\sqrt{z})\left|\frac{1}{2}\frac{1}{\sqrt{z}} \right|,
+\]
+\[
+  = \left(-\frac{1}{8}\sqrt{z} + \frac{1}{2} \right)\left(\frac{1}{2}\frac{1}{\sqrt{z}} \right),
+\]
+\[
+  = \frac{1}{16}\left(\frac{4\sqrt{z}}{z} - 1\right).
+\]
+
+Now we note that $\small{f_Z(z)}$ adds for $\small{A_1}$ and $\small{A_2}$ and that $\small{A_3}$ stands alone. We then have:
+\[
+  f_Z(z)=
+  \left\{
+  \begin{array}{lll}
+      \frac{1}{16}\left(\frac{2\sqrt{z}}{z} - 1 \right) + \frac{\sqrt{z}}{8z}, &  \text{if } 0 \leq z \leq 4 ; \\[2mm]
+      \frac{1}{16}\left(\frac{4\sqrt{z}}{z} - 1\right), &  \text{if } 4 < z < 16 ;\\[2mm]
+      0, & \text{otherwise.} \\[2mm]
+  \end{array} 
+  \right.
+\]
+
+We simplify this to get
+\[
+  f_Z(z)=
+  \left\{
+  \begin{array}{lll}
+      \frac{1}{16}\left(\frac{4\sqrt{z}}{z} - 1\right), &  \text{if } 0 \leq z \leq 4 ; \\[2mm]
+      \frac{1}{16}\left(\frac{4\sqrt{z}}{z} - 1\right), &  \text{if } 4 < z < 16 ;\\[2mm]
+      0, & \text{otherwise.} \\[2mm]
+  \end{array} 
+  \right.
+\]
+
+This is equivalent to just writing:
+\[
+  f_Z(z)=
+  \left\{
+  \begin{array}{lll}
+      \frac{1}{16}\left(\frac{4\sqrt{z}}{z} - 1\right), &  \text{if } 0 \leq z \leq 16 ; \\[2mm]
+      0, & \text{otherwise.} \\[2mm]
+  \end{array} 
+  \right.
+\]
+
+## Problem 2 (8 points)
+#### Alice tosses a coin that comes up heads with probability $\small{p_a}$, and Bob tosses a coin that comes up heads with probability $\small{p_b}$. They toss their coins alternately and independently until someone gets the first head to be the winner of a brand new car. Suppose Alice starts tossing first. Let *T* be the number of tosses taken in this contest.
+
+#### (a) (3 points) Does *T* have the memoryless property? Explain.
+
+No. Recall from class that the memoryless property is
+\[
+  Pr\{T > k + l | T > k\} = Pr\{T > l\},
+\]
+
+which we can rewrite as:
+\[
+  \frac{Pr\{T > k + l\}}{Pr\{T > k\}} = Pr\{T > l\},
+\]
+
+where $\small{k,l}$ are some positive integers. If *T* has the memoryless property, then the property should hold for all $\small{k, l \in \mathbb{Z}^+}$. Consider the case where $\small{k = 1}$ and $\small{l = 2}$. On the left hand side of the equation we have:
+\[
+  \frac{Pr\{T > 1 + 2\}}{Pr\{T > 1\} }, 
+\]
+\[
+  = \frac{1 - Pr\{T \leq 3\}}{1 - Pr\{T \leq 1\}},
+\]
+\[
+  = \frac{1 - \left(Pr\{T = 1\} + Pr\{T = 2\} + Pr\{T = 3\}  \right)}{1 - Pr\{T = 1\}},
+\]
+\[
+  = \frac{1 - (p_a + p_b(1-p_a) + p_a(1-p_a)(1-p_b))}{1 - p_a},
+\]
+\[
+  = \frac{1 - (2p_a + p_b - 2p_ap_b - p_a^2 + p_a^2p_b)}{1 - p_a},
+\]
+\[
+  = \frac{1 - 2p_a - p_b + 2p_ap_b + p_a^2 - p_a^2p_b}{1 - p_a}.
+\]
+
+On the right hand of the equation we have
+\[
+  Pr\{T > 2\},
+\]
+\[
+  = 1 - Pr\{t \leq 2\},
+\]
+\[
+  = 1 - (p_a + p_b(1-p_a)),
+\]
+\[
+  = 1 - p_a -p_b + p_ap_b.
+\]
+
+Since the two sides of our memoryless property are not equivalent in at least one case, we can say that *T* does not have the memoryless property.
+
+#### (b) (5 points) Find $\small{E(T)}$.
+
+To answer this we need to define the p.m.f. $\small{f_T(t)}$ of $T$. I do this by considering the first few coin tosses and then generalize a formula from that. Here are the cases I consider and their corresponding probabilities:
+\[
+  Pr(T = 1) = p_a,
+\]
+\[
+  Pr(T = 2) = p_b (1-p_a),
+\]
+\[
+  Pr(T = 3) = p_a (1-p_a)(1-p_b),
+\]
+\[
+  Pr(T = 4) = p_b (1-p_a)^2(1-p_b),
+\]
+\[
+  Pr(T = 5) = p_a (1-p_a)^2(1-p_b)^2,
+\]
+
+We could keep doing this forever, but that would not be an effective use of time. Instead, we construct the following p.m.f.:
+\[
+  f_T(t)=
+  \left\{
+  \begin{array}{lll}
+      p_a, & \text{if } t = 1; \\[1mm]
+      p_b(1-p_a)^{t-1}(1-p_b)^{t-2}, &  \text{if } t = 2, 4, 6, \dots;\\[1mm]
+      p_a(1-p_a)^{t-2}(1-p_b)^{t-2}, &  \text{if } t = 3, 5, 7, \dots; \\[1mm]
+      0, & \text{otherwise.}\\[1mm]
+  \end{array} 
+  \right.  
+\]
+
+To calculate the expected value we take 
+\[
+  E[T] = \sum_{t=1}^\infty tf_T(t),
+\]
+\[
+  = p_a + \sum_{t = 2,4,\dots}tp_b(1-p_a)^{t-1}(1-p_b)^{t-2} + \sum_{t=3,5,\dots}tp_a(1-p_a)^{t-2}(1-p_b)^{t-2}.
+\]
+
+This is the expected value. The rest of the work from here on is to simplify this expression. First, let $\small{P = (1-p_a)(1-p_b)}$. This yields:
+\[
+  E[T] = p_a + p_b(1-p_a)\sum_{t=2,4,\dots}tP^{t-2} + p_a\sum_{t=3,5,\dots}tP^{t-2}.
+\]
+
+Now let's simplify this in parts. We begin with
+\[
+  p_b(1-p_a)\sum_{t=2,4,\dots}tP^{t-2} = p_b(1-p_a)\left(2P^0 + 4P^2 + 6P^4 +\dots\right),
+\]
+\[
+  = 2p_b(1-p_a)\sum_{t=0}^\infty(t+1)P^{2t},
+\]
+\[
+  = \frac{2p_b(1-p_a)}{(P^2-1)^2}.
+\]
+
+We now simplify 
+\[
+  p_a\sum_{t=3,5,\dots}tP^{t-2} = p_a(3P + 5P^2 + 7P^5 + \dots),
+\]
+\[
+  = p_aP\sum_{t=0}^\infty (2t+3)P^{2t},
+\]
+\[
+  = p_aP\left(\frac{3 - P^2}{(P^2-1)^2}\right).
+\]
+
+We can put all these components together to get
+\[
+  E[T] = p_a + \frac{2p_b(1-p_a)}{(P^2-1)^2} + p_aP\left(\frac{3 - P^2}{(P^2-1)^2}\right),
+\]
+\[
+  = p_a + \frac{1}{(P^2 - 1)^2}(2p_b - 2p_ap_b + 3p_aP - p_aP^3).
+\]
+
+I get the impression this should be much simpler than what I've found, but alas what more can I do?
+
+## Problem 3 (8 points)
+#### Alice and her *n* friends [$\small{n \geq 1}$, so there are totally (*n* + 1) people] decide the following rule for sharing a cash prize totaling *K* dollars: Each person tosses a *p*-coin, $\small{0 \leq p \leq 1}$. The *K* dollars will be equally shared by those who toss a head. If no one tosses a head, then no one will receive any prize. Let *W* be the prize received by Alice. Find the probability mass function $\small{f_W(w)}$ of *W* and calculate $\small{E(W)}$.
+
+We note that we can think of this as a set of *n+1* **Bernoulli** trials, with each trial having a probability of success of *p*. In this case, if we let *Y* represent the number of heads Alice and her friends toss then we can say that *Y* has the binomial distribution:
+\[
+  f_Y(y) = \binom{n+1}{y}p^y(1-p)^{n+1-y}
+\]
+
+This tells us the probability of getting *y* heads in $\small{n+1}$ trials. Since Alice's payoff is the *K* dollars divided by the number of heads that are tossed (or 0 if no heads are tossed), we can say that $\small{\frac{K}{y}}$ models her prize for $\small{1 \leq y \leq n+1}$. To find the $\small{Pr\{W = w\}}$ we can use:
+\[
+  w = \frac{K}{y},
+\]
+\[
+  y = \frac{K}{w},
+\]
+\[
+  Pr\{W = w\} = f_W(w) = f_Y\left(\frac{K}{w}\right) = \binom{n+1}{\frac{K}{w}}p^\frac{K}{w}(1-p)^{n + 1 - \frac{K}{w}}
+\]
+
+Note that this only makes sense for certain discrete values of $\small{w}$. Namely, $\small{w}$ must be one of $\small{K, \frac{K}{2}, \frac{K}{3}, \dots, \frac{K}{n+1}}$ to be used in this equation. We can express $\small{f_W(w)}$ more formally as:
+\[
+  f_W(w)=
+  \left\{
+  \begin{array}{lll}
+      (1-p), & \text{if } w = 0; \\[1mm]
+      \binom{n+1}{\frac{K}{w}}p^\frac{K}{w}(1-p)^{n + 1 - \frac{K}{w}}, &  \text{if } w = K, \frac{K}{2}, \frac{K}{3}, \dots;\\[1mm]
+      0, & \text{otherwise.}\\[1mm]
+  \end{array} 
+  \right.  
+\]
+
+To calculate $\small{E[W]}$ we take
+\[
+  E[W] = \sum_{w=0}^\infty wf_W(w),
+\]
+\[
+  E[W] = K\binom{n+1}{1}p(1-p)^{n} + \frac{K}{2}\binom{n+1}{2}p^2(1-p)^{n-1} + \dots + \frac{K}{n+1}\binom{n+1}{n+1}p^{n+1}
+\]
+
+I'm not exactly sure how to simplify this to something nicer.
+
+## Problem 4 (8 points)
+#### A deck consists of $\small{m \geq 2}$ cards of which exactly two are Joker cards. You randomly select one card at a time, **without replacement**, from a well shuffled deck until both Joker cards are selected. Let *J* be the number of cards drawn. Find the probability mass function $\small{f_J(j)}$ of *J* and calculate $\small{E(J)}$.
+
+Here we can think of our sample space as being divided into two types of cards: We have two Joker-type cards and $\small{m-2}$ non-Joker-type cards. To find the p.m.f. $\small{f_J(j) = Pr\{J = j\}}$ we can break $\small{Pr\{J = j\}}$ into the intersection of two events: event *A* and event *B*. Event *A* is the event that exactly one Joker is drawn out of the first $\small{j-1}$ draws from the deck and event *B* is the event that a Joker is drawn on the $\small{j^{th}}$ draw. We have:
+\[
+  Pr\{J = j\} = Pr\{A \cap B\} = Pr\{A\}Pr\{B | A\}.
+\]
+
+To get $\small{Pr\{A\}}$ we choose one Joker from our two jokers and then choose $\small{j-2}$ non-jokers out of our $\small{m-2}$ non-joker cards. We then divide by the total number of ways of choosing $\small{j-1}$ cards out of *m* cards. That is,
+\[
+  Pr\{A\} = \frac{\binom{2}{1}\binom{m-2}{j-1-1}}{\binom{m}{j-1}},
+\]
+\[
+  = 2\left(\frac{(m-2)!}{m!} \frac{(j-1)!}{(j-2)!} \frac{(m-j+1)!}{(m-j)!} \right),
+\]
+\[
+  = 2\left(\frac{(j-1)(m-j+1)}{m(m-1)}\right).
+\]
+
+To get $\small{Pr\{B | A\}}$ we follow a similar process, but account for the fact that one joker and $\small{j-2}$ non-joker cards have already been picked. Doing so we see that:
+\[
+  Pr\{B|A\} = \frac{\binom{1}{1}\binom{m-2-(j-1)}{0} }{\binom{m-(j-1)}{1}},
+\]
+\[
+  = \frac{1}{m-j+1}.
+\]
+
+We can multiply to find $\small{f_J(j)}$:
+\[
+  f_J(j) = 2\left(\frac{(j-1)(m-j+1)}{m(m-1)}\right) \left(\frac{1}{m-j+1} \right),
+\]
+\[
+  = \frac{2(j-1)}{m(m-1)}.
+\]
+
+We note that this makes sense for when $\small{j = 2, 3, \dots, m}$. When $\small{j}$ is not one of those integers we require that $\small{f_J(j) = 0}$. To write this more fomally, we have:
+\[
+  f_J(j)=
+  \left\{
+  \begin{array}{lll}
+      \frac{2(j-1)}{m(m-1)}, & \text{if } j = 2, 3, \dots, m; \\[2mm]
+      0, & \text{otherwise.}\\[2mm]
+  \end{array} 
+  \right.  
+\]
+
+To calculate $\small{E[J]}$ we take
+\[
+  E[J] = \sum_{j=2}^{m} jf_J(j) =  \sum_{j=2}^{m} j\frac{2(j-1)}{m(m-1)}.
+\]
+
+We can simplify this:
+\[
+  E[J] = \frac{2}{m(m-1)} \left[ \sum_{j=2}^m j^2 + \sum_{j=2}^m j \right],
+\]
+\[
+  = \frac{2}{m(m-1)} \left[ \sum_{j=1}^m j^2 + \sum_{j=1}^m j \right],
+\]
+\[
+  = \frac{2}{m(m-1)} \left[\frac{m(m+1)(2m+1)}{6} - \frac{m(m+1)}{2} \right],
+\]
+\[
+  = \frac{2(m+1)}{m-1}\left[\frac{2m+1}{6} - \frac{1}{2} \right],
+\]
+\[
+  = \frac{2(m+1)}{m-1}\left[\frac{2(m-1)}{6} \right],
+\]
+\[
+  = \frac{2(m+1)}{3}.
+\]
+
+Thus we've found that $\small{E[J] = \frac{2(m+1)}{3}}$. This marks the end of my test!

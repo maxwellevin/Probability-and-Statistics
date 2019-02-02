@@ -1,0 +1,68 @@
+---
+title: 'Math 451 HW #7'
+author: "Maxwell Levin"
+date: "September 21, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Question 1.
+
+
+#### My telephone rings 12 times each week, the calls being randomly distributed among the 7 days. What is the probability that I get at least one call each day?
+
+Let $\small{E_j = \{ \text{at least 1 call on the jth day} \} }$ and $\small{E_j^c = A_j = \{ \text{no calls on the jth day} \}}$. In both cases we let $\small{j}$ range from 1 to 7 to represent each day. We see that 
+\[
+  Pr (\text{at least 1 call every day}) = Pr(\cap_{i=1}^7 E_i), 
+\]
+\[
+  = 1 - Pr( (\cap_{i=1}^7 E_i)^c),
+\]
+\[
+  = 1 - Pr(\cup_{i=1}^7 A_i).
+\]
+
+Note that 
+\[
+  Pr(A_j) = \left(\frac{6}{7}\right)^{12},
+\]
+\[
+  Pr(A_i \cap A_j) = \left(\frac{5}{7}\right)^{12},
+\]
+and so on until we get to 
+\[
+  Pr(\cap_{i=1}^7 A_i) = \left(\frac{1}{7}\right)^{12}.
+\]
+
+The number of ways each of these events can occur is $\small{\binom{7}{1}, \binom{7}{2}, \binom{7}{3} \dots \binom{7}{6}}$. We can use the inclusion-exclusion principle to write
+\[
+  Pr(\cup_{i=1}^7 A_i) = \sum_{j=1}^7 Pr(A_j) - \sum_{1 \leq i < j \leq 7} Pr(A_i \cap A_j) + \dots,
+\]
+\[
+  = 1 - \binom{7}{1}\left(\frac{6}{7}\right)^{12} + \binom{7}{2}\left(\frac{5}{7}\right)^{12} - \dots +\binom{7}{6}\left(\frac{1}{7}\right)^{12} 
+  \approx 0.2285.
+\]
+Thus there is about a 23% chance I will receive at least one phone call every day.
+
+#### Repeat the question for the case of receiving 16 calls in a week.
+
+Note that our setup remains exactly the same, and we just need to update the specifics of our problem. We now note that 
+\[
+  Pr(A_j) = \left(\frac{6}{7}\right)^{16},
+\]
+\[
+  Pr(A_i \cap A_j) = \left(\frac{5}{7}\right)^{16},
+\]
+and so on until we get to 
+\[
+  Pr(\cap_{i=1}^7 A_i) = \left(\frac{1}{7}\right)^{16}.
+\]
+The number of ways of each of these events can occur remains unchanged, i.e. $\small{\binom{7}{1}, \binom{7}{2}, \binom{7}{3} \dots \binom{7}{6}}$. Our application of the inclusion-exclusion principle yields
+\[
+  = 1 - \binom{7}{1}\left(\frac{6}{7}\right)^{16} + \binom{7}{2}\left(\frac{5}{7}\right)^{16} - \dots +\binom{7}{6}\left(\frac{1}{7}\right)^{16} 
+  \approx 0.4977.
+\]
+Thus there is about a 50% chance that I will receive at least one phone call every day.
