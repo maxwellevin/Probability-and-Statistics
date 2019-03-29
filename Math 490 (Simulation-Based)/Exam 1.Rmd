@@ -1,0 +1,368 @@
+---
+title: 'Test #1'
+author: "Maxwell Levin"
+date: "February 9, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, comment=NA)
+```
+
+## Problem 1 (20 Pts)
+
+####You roll two fair dice and label the two observed values $\small{X}$ and $\small{Y}$. You will be rewarded $\small{W = |2X - Y|}$ dollars.
+
+#### a. (3 Pts)   Find the p.m.f. of $\small{W}$.
+
+The p.m.f. of $\small{W}$ is as follows:
+
+```{r}
+table <- matrix(c("3/36", "5/36", "5/36", "4/36", "4/36", "3/36", "3/36", "3/36", "2/36", "2/36", "1/36", "1/36"), ncol=12, byrow=TRUE)
+colnames(table) <- c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11")
+rownames(table) <- c("p.m.f.")
+table <- as.table(table)
+table
+```
+
+
+
+
+#### b. (4 Pts)   Find $\small{E(W)}$ and $\small{SD(W)}$.
+
+We calculate $\small{E(W)}$
+
+\[
+  E(W) = 0\left(\frac{3}{36}\right) + 1\left(\frac{5}{36}\right) + \dots + 11\left(\frac{1}{36}\right) \approx 4.222
+\]
+
+We calculate $\small{Var(W)}$
+
+\[
+  Var(W) = (0 - 4.22)^2\left(\frac{3}{36}\right) + (1 - 4.22)^2\left(\frac{5}{36}\right) + \dots + (11 - 4.22)^2\left(\frac{1}{36}\right) \approx 9.006.
+\]
+
+Thus we see that 
+
+\[
+  SD(W) = \sqrt{Var(W)} \approx 3.001.
+\]
+
+#### c. (3 Pts)   Use R to sample 1024 values from the distribution of $\small{W}$. Make a histogram of the 1024 observed values and comment on the shape of the histogram. Also report the mean and the standard deviation of the observed values.
+
+
+```{r, echo=TRUE}
+X = sample(1:6, 1024, replace=T)
+Y = sample(1:6, 1024, replace=T)
+W = abs(2*X - Y)
+hist(W, breaks=seq(-0.5, 11.5, 1), prob = T)
+```
+
+The histogram for this plot looks about like what one would expect based on the p.m.f. of $\small{W}$: The most frequent values for $\small{W}$ are 1 and 2, and 0, 3, 4, 5, 6, and 7 are all about as likely as each other, and 8, 9, 10, and 11 are less frequent.
+
+The mean of $\small{W}$ is
+```{r}
+mean(W)
+```
+
+The standard deviation of $\small{W}$ is
+```{r}
+sd(W)
+```
+
+Both the mean and the standard deviation are reasonably close to our calculations in (b).
+
+
+#### d. (3 Pts)   Roll the two fair dice repeatedly for $\small{n = 9}$ times and label the observed values by $\small{(X_i,Y_i), i = 1,2, \dots, 9}$. Let $\small{W_i = |2X_i - Y_i|, i = 1,2, \dots, 9,}$ and let
+\[
+  \overline{W_9} = \frac{W_1 + W_2 + \dots + W_9}{9}.
+\]
+
+#### Find $\small{E(\overline{W_9})}$ and $\small{SD(\overline{W_9})}$.
+
+We know from a similar problem on HW #3 that the sample mean does not change with sample size. That is,
+
+\[
+  E(\overline{W_9}) = E(W) \approx 4.222.
+\]
+
+Additionally, we know that our standard deviation decreases by the square root of our sample size. That is,
+
+\[
+  SD(\overline{W_9}) = \frac{1}{3}SD(W) \approx 1.000.
+\]
+
+#### e. (3 Pts) Use R to generate 1024 sample means $\small{\overline{W_9}}$. Make a histogram and comment on the shape of the simulated sample means. Also report the mean and the standard deviation of the simulated sample means.
+
+```{r, echo=TRUE}
+prob1e = function(sam, rep) {
+  obs = NULL
+  for (i in 1:rep) {
+    X = sample(1:6, sam, replace=TRUE)
+    Y = sample(1:6, sam, replace=TRUE)
+    W = abs(2*X - Y)
+    obs = c(obs, mean(W))
+  }
+  obs
+}
+simul = prob1e(9, 1024)
+hist(simul, breaks=seq(-0.5, 11.5, 1), prob=T)
+```
+
+This plot looks more or less like a normal distribution centered around 4, perhaps slightly skewed to the right (the density of 5 looks consistently larger than the density of 3). This is more or less what we expect, as the central limit theorem would suggest that as we increase $\small{n}$ our plot of sample means becomes more or less a normal distribution, even though our initial distribution, $\small{W}$, was not a normal distribution.
+
+
+The mean of our sample means is
+```{r}
+mean(simul)
+```
+
+The standard deviation is
+```{r}
+sd(simul)
+```
+
+These are both near the values we calculated in part (d).
+
+
+#### f. (2 Pts) Use a normal probability plot to assess the normality of the 1024 sample means simulated in part (e). Verbally assess the normality of $\small{\overline{W_9}}$ based on the plot.
+
+```{r}
+qqnorm(simul, col="orange")
+qqline(simul, col="blue")
+```
+
+Our normal probability plot seems to indicate that our distribution is fairly normal, as the Q-Q plot above looks linear for the majority of the plot.
+
+
+
+#### g. (2 Pts) Use the Shapiro-Wilk test to assess the normality of the 1024 sample means simulated in part (e). Verbally assess the normality of $\small{\overline{W_9}}$ based on the P-value.
+
+```{r}
+shapiro.test(simul)
+```
+
+Our Shapiro-Wilk test tells us that there is moderate to strong evidence for normality, which is in agreement with our previous findings.
+
+
+## Problem 2 (24 Pts)
+
+####Let random variable $\small{X}$ have the following probability density function.
+\[f(x) =    \left\{
+\begin{array}{ll}
+      \frac{x}{50} &  0 \leq x\leq 10; \\
+      0 & \text{otherwise.} \\
+\end{array} 
+\right. \]
+
+#### a. (2 Pts)   Find the 0.6-quantile of $\small{X}$.
+
+
+We calculate the 0.6-quantile, $\small{\xi}$,
+
+\[
+  0.6 = \int_0^{\xi} \frac{x}{50} dx, 
+\]
+\[
+  0.6 = \frac{\xi^2}{100}
+\]
+\[
+  \xi \approx 7.746.
+\]
+
+#### b. (3 Pts)   Find $\small{E(X)}$ and $\small{SD(X)}$.
+
+We calculate $\small{E(X)}$ by
+
+\[
+  E(X) = \int_0^{10} \frac{x^2}{50} dx \approx 6.667.
+\]
+
+We calculate $\small{Var(X)}$
+
+\[
+  Var(X) = E(X^2) - E(X)^2,
+\]
+\[
+  E(X^2) = \int_0^{10} \frac{x^3}{50} dx = 50,
+\]
+\[
+  Var(X) = 50 - 6.667 \approx 43.333.
+\]
+
+That is, $\small{SD(X)}$ is
+
+\[
+  SD(X) = \sqrt{Var(X)} \approx 6.583.
+\]
+
+
+#### c. (3 Pts)   Find the c.d.f. $\small{F(x)}$ of $\small{x}$.
+
+The c.d.f. $\small{F(x)}$ of $\small{x}$ is
+
+\[F(x) =    \left\{
+\begin{array}{ll}
+      \int_0^x f(t) dt &  0 \leq x\leq 10; \\
+      0 & \text{otherwise.} \\
+\end{array} 
+\right. \]
+
+That is, 
+
+\[F(x) =    \left\{
+\begin{array}{ll}
+      \frac{x^2}{50} &  0 \leq x\leq 10; \\
+      0 & \text{otherwise.} \\
+\end{array} 
+\right. \]
+
+#### d. (2 Pts)   Find the inverse $\small{F^{-1}(y)}$ of the c.d.f. $\small{F(x)}$ of $\small{x}$.
+
+We can say
+
+\[
+  F(x) = y = \frac{x^2}{50},
+\]
+\[
+  x = \sqrt{50y},
+\]
+\[
+  F^{-1}(y) = \sqrt{50y}.
+\]
+
+We care about this for $\small{ 0 \leq y \leq 1}$.
+
+
+#### e. (4 Pts)   Use R to run the CDF inverse method to sample 10000 values from $\small{X}$. Then make a histogram, add the density curve to histogram, and report the 0.6-quantile, the mean, and the standard deviation of the 10000 observed values.
+
+```{r, echo=TRUE}
+cdfInv = function(n) {
+  U = runif(n)
+  sqrt(50*U)
+}
+X = cdfInv(10000)
+hist(X, breaks=seq(0, max(X)+1), prob=T, xlim=c(0,20), ylim=c(0, 0.5))
+
+x = seq(0, 20, 0.01)
+y = ifelse( x >= 0 & x<= 10, sqrt(50*x), 0 )
+lines(x, y, col="blue")
+```
+
+
+The 0.6-quantile is
+```{r}
+quantile(X, 0.6)
+```
+
+The mean is
+```{r}
+mean(X)
+```
+
+The standard deviation is
+```{r}
+sd(X)
+```
+
+These values are not close to what we calculated in the previous parts of this problem. Something has gone wrong...
+
+
+#### f. (3 Pts)   Let random variables $\small{X_1, X_2, \dots, X_{25}}$ be independent and identically distributed as $\small{X}$. Let
+\[
+  \overline{X_{25}} = \frac{X_1 + X_2 + \dots + X_{25}}{25}.
+\]
+
+#### Find $\small{E(\overline{X_{25}})}$ and $\small{SD(\overline{X_{25}})}$.
+
+
+#### g. (3 Pts)   Use R to generate 1024 sample means $\small{\overline{X_{25}}}$ defined in part (f). Make a histogram and comment on the shape of the simulated sample means. Also report the mean and the standard deviation of the simulated sample means.
+
+
+#### h. (2 Pts)   Use a normal probability plot to assess the normality of the 1024 sample means simulated in part (g). Verbally assess the normality of $\small{\overline{X_{25}}}$ based on the plot.
+
+
+
+#### i. (2 Pts)   Use the Shapiro-Wilk test to assess the normality of the 1024 sample means simulated in part (g). Verbally assess the normality of $\small{\overline{X_{25}}}$ based on the P-value.
+
+
+
+## Problem 3 (6 Pts)
+
+#### a. (3 Pts)   Use the linear congruential generator (LCG)
+\[
+  x_{n+1} \equiv (16897x_n + 2836) \text{ mod } 2147483647
+\]
+
+#### with seed $\small{x_0 = 0}$ to generate 5000 random numbers $\small{X_i}$. Then make a correlation plot $\small{(X_i, X_{i+1})}$ for $\small{i = 1, 2, \dots, 4999}$. What can we conclude based on the correlation plot?
+
+```{r, echo=TRUE}
+lcg = function(n, slope, intercept, mod, seed=0) {
+  output = seed
+  for (i in 1:n) {
+    x = (slope*seed + intercept) %% mod
+    output = c(output, x)
+    seed = x
+  }
+  output/mod
+}
+
+X = lcg(5000, 16897, 2836, 2147483647)
+
+plot(X[1:4999], X[2:5000], col="red")
+```
+
+This plot looks pretty random, so we can say that there is no correlation between consecutive numbers generated by our LCG with the specified parameters.
+
+#### a. (3 Pts)   For the linear congruential generator (LCG)
+\[
+  x_{n+1} \equiv (2x_n + 1) \text{ mod } 2^{16},
+\]
+
+#### explain why this LCG cannot generate more than 17 distinct numbers and it will always end with the number 65535.
+
+
+Let $\small{x \in \mathbb{Z_{2^{16}}} }$ ($\small{\mathbb{Z}}$ mod $\small{2^{16}}$) be arbitrary. Consider the following,
+
+\[
+  2 [x] + [1],
+\]
+\[
+  2^2[x] + 2[1] + [1],
+\]
+\[
+  \vdots
+\]
+\[
+  2^{16}[x] + 2^{15}[1] + \dots + 2[1] + [1].
+\]
+
+Examine the line
+
+\[
+  2^{16}[x] + 2^{15}[1] + \dots + 2[1] + [1],
+\]
+\[
+  = [0] + 2^{15}[1] + \dots + 2[1] + [1],
+\]
+\[
+  = 2^{16}[1] - [1],
+\]
+\[
+  = [2^{16} - 1] = [65535].
+\]
+
+If we continue the process we see
+
+\[
+  2[2^{16} - 1] + [1]
+\]
+\[
+  = [0] - [2] + [1] = [-1] = [65535].
+\]
+
+Thus no matter what our choice of $\small{x}$, i.e. our seed, our linear congruential generator will always give us 65535 after a maximum of 17 iterations. 
+
+DISTINCTNESS NEEDED
+
+

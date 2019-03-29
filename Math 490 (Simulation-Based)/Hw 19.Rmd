@@ -1,0 +1,107 @@
+---
+title: "Math 490 HW #19"
+author: "Maxwell Levin"
+date: "April 9, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, comment=NA, fig.width = 6, fig.height = 4, fig.align = "center")
+```
+
+
+## Question 1.
+
+#### Use the method of solving a linear system to find the stationary distribution of the transition matrix in exercise 2.3 in Voss. Express your answer as a vector of fractions.
+
+Voss provides us with the following transition matrix: 
+\[
+  \textbf{P} =
+  \begin{bmatrix}
+    \frac{2}{3} & \frac{1}{3} & 0 & 0 \\[1mm]
+    \frac{1}{10} & \frac{9}{10} & 0 & 0 \\[1mm]
+    \frac{1}{10} & 0 & \frac{9}{10} & 0 \\[1mm]
+    \frac{1}{10} & 0 & 0 & \frac{9}{10} \\[1mm]
+  \end{bmatrix}
+\]
+
+We can solve the linear system by taking the matrix product $\small{\bf{vP}}$ and setting it equal to $\small{\bf{v}}$, where $\small{\bf{v}}$ is the stationary distribution for the transition matrix $\small{\bf{P}}$. We do this manually first:
+
+\[
+  [a, b, c, d] 
+  \begin{bmatrix}
+    \frac{2}{3} & \frac{1}{3} & 0 & 0 \\[1mm]
+    \frac{1}{10} & \frac{9}{10} & 0 & 0 \\[1mm]
+    \frac{1}{10} & 0 & \frac{9}{10} & 0 \\[1mm]
+    \frac{1}{10} & 0 & 0 & \frac{9}{10} \\[1mm]
+  \end{bmatrix}
+  = \left[\frac{2a}{3} + \frac{b}{10} + \frac{c}{10} + \frac{d}{10}, 
+          \frac{a}{3} + \frac{9b}{10}, \frac{9c}{10}, \frac{9d}{10} \right].
+\]
+
+Since $\small{\textbf{v}}$ is a stationary vector for $\small{\bf{P}}$, the resulting product should be equal to $\small{\bf{v}}$. Thus we have
+\[
+  a = \frac{2a}{3} + \frac{b}{10} + \frac{c}{10} + \frac{d}{10},
+\]
+\[
+  b = \frac{a}{3} + \frac{9b}{10},
+\]
+\[
+  c = \frac{9c}{10},
+\]
+\[
+  d =  \frac{9d}{10},
+\]
+\[
+  a + b + c + d = 1.
+\]
+
+We see that both $\small{c}$ and $\small{d}$ must be 0, so this leaves
+\[
+  a = \frac{2a}{3} + \frac{b}{10},
+\]
+\[
+  b = \frac{a}{3} + \frac{9b}{10},
+\]
+\[
+  a + b = 1.
+\]
+
+This means that $\small{ a = \frac{3}{13}}$ and $\small{b = \frac{10}{13}}$. Thus our stationary distribution is
+
+\[
+  \textbf{v} = \left[ \frac{3}{13}, \frac{10}{13}, 0, 0  \right].
+\]
+
+
+## Question 2.
+
+#### Use R to find the stationary distribution of the transition matrix in exercise 2.3. 
+
+We run the following code in R:
+```{r, echo=TRUE}
+# Transition Matrix
+P = matrix( c(2/3, 1/3, 0, 0, 1/10, 9/10, 0, 0, 1/10, 0, 9/10, 0, 1/10, 0, 0, 9/10),
+            nrow=4, ncol=4, byrow=TRUE)
+
+# Function that will compute the stationary vector for any
+# row-oriented transition matrix
+getEquilibrium = function(transition) {
+  eigen_stuff = eigen(t(transition))
+  eigen_vec1 = eigen_stuff$vectors[ , 1]
+  library(MASS)
+  fractions(abs(eigen_vec1) / sum(abs(eigen_vec1)))
+}
+
+getEquilibrium(P)
+```
+
+
+Thus we see that we've found the same stationary distribution as we found in the first question! This is good news.
+
+
+
+
+
+
+

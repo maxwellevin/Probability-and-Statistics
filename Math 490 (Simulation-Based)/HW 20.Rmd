@@ -1,0 +1,157 @@
+---
+title: 'Math 490 HW #20'
+author: "Maxwell Levin"
+date: "April 18, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment=NA, fig.width = 6, fig.height = 4, fig.align = "center")
+```
+
+## Question 1.
+
+Place a knight on a 3x3 empty chessboard. The position of the knight is denoted by ordered pairs $\small{(x, y)}$, where $\small{x,y = 1, 2, 3}$. Suppose the knight initially starts at the (1,1) square, which is black. At each step, the knight will make a random move to a legal position. Let $\small{X_j}$ record the knight's position at time $\small{j = 0, 1, 2 \dots}$ 
+
+
+#### a. Find the one-step transition matrix $\small{\textbf{P}}$ of $\small{X_j}$. For the transition matrix, arrange the states in order of (1,1), (2,1), (3,1), (1,2), (2,2), (3,2), (1,3), (2,3), and (3,3).
+
+\[
+  \textbf{P} =
+  \begin{bmatrix}
+    0 & 0 & 0 & 0 & 0 & \frac{1}{2} & 0 & \frac{1}{2} & 0 \\[1mm]
+    0 & 0 & 0 & 0 & 0 & 0 & \frac{1}{2} & 0 & \frac{1}{2} \\[1mm]
+    0 & 0 & 0 & \frac{1}{2} & 0 & 0 & 0 & \frac{1}{2} & 0 \\[1mm]
+    0 & 0 & \frac{1}{2} & 0 & 0 & 0 & 0 & 0 & \frac{1}{2} \\[1mm]
+    0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\[1mm]
+    \frac{1}{2} & 0 & 0 & 0 & 0 & 0 & \frac{1}{2} & 0 & 0 \\[1mm]
+    0 & \frac{1}{2} & 0 & 0 & 0 & \frac{1}{2} & 0 & 0 & 0 \\[1mm]
+    \frac{1}{2} & 0 & \frac{1}{2} & 0 & 0 & 0 & 0 & 0 & 0 \\[1mm]
+    0 & \frac{1}{2} & 0 & \frac{1}{2} & 0 & 0 & 0 & 0 & 0 \\[1mm]
+  \end{bmatrix}
+\]
+
+#### b. Is $\small{X_j}$ irreducible? 
+
+Recall that a Markov Chain is called irreducible if, from any initial state, the chain can reach any other state in some number of steps. Thus $\small{X_j}$ is not irreducible because we see that a knight placed in the center of our 3x3 board cannot make any legal moves. This means that a knight initially placed in the center of the board cannot reach any other state. Consequently this means that a knight placed anywhere in our grid except the center cannot reach the center square. Thus our Markov chain $\small{X_j}$ is not irreducible.
+
+#### c. Is $\small{X_j}$ aperiodic? 
+
+Recall that a Markov Chain is called aperiodic if the Markov Chain has no periodic states. A state is said to be periodic with period $\small{d}$ if the Markov Chain, starting at that state, can only reach that state in steps which are multiples of $\small{d}$. I claim that $\small{X_j}$ is not aperiodic because I believe that there exists at least one periodic state in our Markov Chain. 
+Consider the state where the knight is initially placed in the bottom left corner of our grid, i.e. (1, 1). From here the knight can move to (3,2) or (2, 3). Say the knight moves. Then it will be able to move back to its home square, (1,1). Notice that the length of this chain is 2. Now let's examine the case where the knight's first move is to (3,2). From here the knight can either go back home, or go to (1,3). As we've seen, the first step leads to a length of 2, so we go to (1,3). From here we can retrace our steps backwack to get a length of 4. If we choose to continuously seek a new square, we go to (2,1), (3,3), (1,2), (3,1), (2, 3), (1, 1). This yields a length of 8. Thus every path we take is a multiple of 2. This is not a proof, but hopefully this gives some insight as to why the period of this state is 2.
+
+Since there exists a state with a period of 2, our Markov Chain is said to be aperiodic. 
+
+
+#### d. Is $\small{X_j}$ regular? You may use R to justify your answer.
+
+A Markov Chain $\small{X_j}$ is said to be regular if there exists a positive integer $\small{n}$ such that $\small{\textbf{P}^n}$ has entries that are stictly positive. 
+
+I'm not sure how to tackle this problem without the use of an example, so let's use R to help justify our answer:
+```{r, echo=FALSE, include=FALSE}
+require(expm)
+```
+
+```{r}
+P = matrix( c(0, 0, 0, 0, 0, 1/2, 0, 1/2, 0,
+              0, 0, 0, 0, 0, 0, 1/2, 0, 1/2,
+              0, 0, 0, 1/2, 0, 0, 0, 1/2, 0,
+              0, 0, 1/2, 0, 0, 0, 0, 0, 1/2,
+              0, 0, 0, 0, 1, 0, 0, 0, 0,
+              1/2, 0, 0, 0, 0, 0, 1/2, 0, 0,
+              0, 1/2, 0, 0, 0, 1/2, 0, 0, 0,
+              1/2, 0, 1/2, 0, 0, 0, 0, 0, 0,
+              0, 1/2, 0, 1/2, 0, 0, 0, 0, 0),
+            nrow=9, ncol=9, byrow=TRUE)
+
+P %^% 10000
+```
+
+We see that our 10,000-step transition matrix has plenty of zeros in it, so we can conclude that our Markov Chain $\small{X_j}$ is not regular.
+
+#### e. Does the n-step distribution of the chain stabilize?
+
+No, our chain does not stabilize. To justify this response we can ask R to compute the 10,001-step transition matrix:
+```{r}
+P %^% 10001
+```
+
+We see that it is slightly different than the 10000-step transition matrix. If we wanted, we could keep incrementing our step by 1 and compare the resulting transition matrices. What we would see is that if the step is even, we will get the matrix seen in part (d), and if the step is odd, we'll see the matrix above. Thus our chain exhibits oscillatory behavior which means that it does not converge/stabilize. 
+
+
+#### f. Find the stationary distribution of $\small{X_j}$.
+
+Based on our result from part (e), it is clear that any distribution which include the non-center squares will not be stationary. Thus our only stationary distribution is the distribution where the knight is placed in the center of the board, i.e.
+\[
+  \textbf{v} = (0, 0, 0, 0, 1, 0, 0, 0, 0).
+\]
+
+#### g. If the knight moves to a black square, he will gain 1 point; if the knight moves to a white square he will lose 1 point. Let the knight move on the chessboard for a large number of steps. What is the knight's average net gain? Answer this question using the Ergodic Theorem.
+
+We first think about this question from a practical standpoint. One fact that immediately jumps out at me is that a knight's move will take it to a square of the opposite color of its starting point. That is, if a knight moves from a light square, it will land on a dark square and visa-versa. 
+
+The Ergodic theorem states that if we take the mean of our Markov Chain states over a large number of steps then we will get some average value. If we denote each state as either a 1 or a -1 then the Ergodic theorem will yield the average net gain for the knight. 
+
+We can use our intuition alongside our knowledge of the Ergodic Theorem to show that the knight's average net gain will be $\small{\frac{1}{9}}$ for a large number of steps. Say the knight begins on the center square. Since this square is black, the knight's score starts at 1. Additionally since the knight has no legal moves from this square the knight will remain on this square forever. Thus the knight will have an average net gain of 1 here. In the second case the knight begins on a black non-center square. In this case we notice that the score of the knight will alternate between two values: 0 and 1. As the number of steps goes to infinity, we notice that the average net gain will be 0. A similar thing happens if the knight begins on a light square, except here the score would alternate between -1 and 0. The average net score in this case would ultimately be 0 as well. Thus the only state where the knight accummulates score is when the knight begins in the center. If we choose our starting point randomly then this happens with probability $\small{\frac{1}{9}}$. 
+
+Thus our knight's average net gain is $\small{\frac{1}{9}}$.
+
+Note: I've just realized that we specify that the knight begins at (1,1). This means that the knight begins on a dark square, and more importantly, the knight does not begin in the center. Thus the knight's average net gain will be 0.
+
+#### h. Answer part (g) by simulation.
+
+We can simulate the average net gain of the knight by running the following code in R:
+
+```{r}
+# Knight starts at A1 = (1,1)
+mu = c(1, 0, 0, 0, 0, 0, 0, 0, 0)
+
+mcKnight = function(step, initial, P) {
+	Xj = sample(1:length(initial), 1, prob=initial)  # initialize Knight's move
+	gain = 0  # initialize net gain to be 0
+	if( Xj %% 2 == 1) { # gain 1 if knight lands on a dark square
+	  gain <- gain + 1
+  } else {  # lose 1 if knight lands on light square
+    gain <- gain - 1
+  }
+	for (j in 1:step) {
+		rowVec = P[Xj, ] # take the Xj-th row vector of P
+		Xj = sample(1:length(rowVec), 1, prob=rowVec) # Knight's moves
+		# update the net gain
+	  if( Xj %% 2 == 1) {  # gain 1 if knight lands on a dark square
+	    gain <- gain + 1
+    } else {  # lose 1 if knight lands on light square
+     gain <- gain - 1
+    }
+	}
+	gain/step  # return the average net gain
+}
+
+# In R Console, we can run this simulation of Xj, j=500, once:
+mcKnight(500000, mu, P)
+```
+
+As we increase the number of steps, we see that the average net gain gets closer and closer to 0. This experimentally confirms our result in part (g).
+
+Note: if we want to allow randomness for our initial starting point, we can run the following code in R to test our other hypothesis in part (g):
+```{r}
+
+oneTest = function(step, P) {
+  mu = sample(c(1, 0, 0, 0, 0, 0, 0, 0, 0))
+  mcKnight(step, mu, P)
+}
+
+mean(replicate(1024, oneTest(500, P)))
+```
+
+We see this is decently close to $\small{\frac{1}{9}}$, so I would say this confirms my answer to part (g). (To get more accuracy we would need to run this more times.)
+
+
+#### i. If $\small{X_j = (x,y)}$, define $\small{Y_j = |x-y| }$, that is, $\small{Y_j}$ denotes the absolute difference of the two coordingates of knight's position at time $\small{j}$. Is $\small{Y_j}$ a Markov Chain?
+
+I believe that this is not a Markov Chain because of the presence of the central square. When we used $\small{X_j = (x,y)}$, this square had a unique identity, which was crucial since it was an isolated state. In the new definition, $\small{Y_j = |x-y| }$. This means that the center square (2,2) is treated as if it were identical to (1,1) or (3,3), but in reality it is not -- the center square must be treated as a self-looping state for $\small{Y_j}$ to be a Markov Chain originating from the knight's moves on the 3x3 board. 
+
+
+
+
+

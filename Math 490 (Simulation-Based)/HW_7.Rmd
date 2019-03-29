@@ -1,0 +1,214 @@
+---
+title: "Math 490 HW #7"
+author: "Maxwell Levin"
+date: "February 14, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, comment=NA)
+```
+
+
+## Question 1.
+
+#### Let $\small{X}$ be a discrete r.v. with p.m.f.: $\small{f(1) = \frac{3}{9}, f(2) = \frac{2}{9}, f(3) = \frac{1}{9}, f(4) = \frac{3}{9}}$, and let $\small{Y}$ be a discrete r.v. with p.m.f.: $\small{g(x) = \frac{1}{4}, x = 1,2,3,4}$.
+
+#### a. Find $\small{E(X)}$ and $\small{SD(X)}$.
+
+We calculate $\small{E(X)}$ by
+
+\[
+  E(X) = 1\left(\frac{3}{9}\right) + 2\left(\frac{2}{9}\right) + 3\left(\frac{1}{9}\right) + 4\left(\frac{3}{9}\right),
+\]
+\[
+  E(X) = \frac{22}{9} \approx 2.444.
+\]
+
+
+We calculate $\small{Var(X)}$ by
+
+\[
+  Var(X) = E(X^2) - E(X)^2,
+\]
+\[
+  E(X^2) = 1^2\left(\frac{3}{9}\right) + 2^2\left(\frac{2}{9}\right) + 3^2\left(\frac{1}{9}\right) + 4^2\left(\frac{3}{9}\right),
+\]
+\[
+  E(X^2) = \frac{68}{9} \approx 7.555,
+\]
+\[
+  Var(X) = \frac{68}{9} - \left(\frac{22}{9}\right)^2 \approx 1.580.
+\]
+
+Thus the standard deviation is
+
+\[
+  SD(X) = \sqrt{Var(X)} \approx 1.257.
+\]
+
+
+#### b. Use the rejection method to sample from $\small{f(x)}$ using $\small{g(x)}$ as the proposal distribution. Apply the method with 10000 trials. Make a relative frequency table, and report the mean and the standard deviation of the simulated values.
+
+```{r, echo=TRUE}
+rejection = function(trials) {
+  
+  target = c(3/9, 2/9, 1/9, 3/9)
+  proposal = c(1/4, 1/4, 1/4, 1/4)
+  supremum = 12/9
+  results = c()
+
+  for (i in 1:trials) {
+    u = runif(1)
+    y = sample(1:4,1,prob=proposal)
+    if (u <= target[y]/(supremum*proposal[y]) ) {
+      results = c(results, y)
+    }
+  }
+  results;
+}
+
+trials = 10000
+simul = rejection(trials)
+table(simul)/length(simul)
+```
+
+The mean of our simulation is:
+```{r}
+mean(simul)
+```
+
+The standard deviation is:
+```{r}
+sd(simul)
+```
+
+
+These are pretty close to what we calculated in part (a).
+
+#### c. For the rejection sampling method used in part (b), what is the probability of acceptance?
+
+We know from class that the probability of acceptance is given by
+
+\[
+  Pr\{Accept\} = \frac{1}{M},
+\]
+
+where $\small{M}$ is the suprema of $\small{\frac{f(x)}{g(x)}}$. That is,
+
+\[
+  M = sup\left(\frac{f(x)}{g(x)}\right) = \frac{12}{9},
+\]
+\[
+  Pr\{Accept\} = \frac{9}{12} = \frac{3}{4}.
+\]
+
+
+We can confirm this experimentally by dividing the length of 'simul' by the number of trials we've run:
+
+```{r, echo=TRUE}
+
+length(simul) / trials
+
+```
+
+This is what we expect, wonderful!
+
+
+## Question 2.
+
+#### Let random variable $\small{X}$ have the following probability density function:
+\[
+  f(x) = \left\{
+        \begin{array}{ll}
+            \frac{x}{50} & \quad 0 \leq x \leq 10; \\
+            0 & \quad \text{otherwise.}
+        \end{array}
+    \right.
+\]
+
+
+#### a. Find $\small{E(X)}$ and $\small{SD(X)}$. 
+
+
+We calculate $\small{E(X)}$ by
+
+\[
+  E(X) = \int_0^{10} \frac{x^2}{50} dx \approx 6.667.
+\]
+
+We calculate $\small{Var(X)}$
+
+\[
+  Var(X) = E(X^2) - E(X)^2,
+\]
+\[
+  E(X^2) = \int_0^{10} \frac{x^3}{50} dx = 50,
+\]
+\[
+  Var(X) = 50 - (6.667)^2 \approx 5.556.
+\]
+
+That is, $\small{SD(X)}$ is
+
+\[
+  SD(X) = \sqrt{Var(X)} \approx 2.357.
+\]
+
+
+#### b. Use the rejection method to sample from $\small{f(x)}$ using Uniform(0,10) as the proposal distribution. Apply the method with 10000 trials. Make a histogram, add the density curve to the histogram, and report the mean and the standard deviation of the simulated values.
+
+```{r, echo=TRUE}
+target = function(x) {
+		ifelse( (x >= 0 & x <= 10), x/50, 0);
+}
+
+proposal = function(x) { 0.1; }
+
+rejCont = function(trials) {
+  supremum = 5;
+	results <- c(); 
+  for (i in 1:trials){
+	  u<-runif(1);
+	  y<-runif(1, 0, 10);
+	  if (u <= target(y) / (supremum * proposal(y)) ) {
+		  results = c(results, y);
+	  }
+	}
+  results; 
+}
+
+trials = 10000
+simul = rejCont(trials)
+hist(simul, breaks=seq(0, max(simul)+1), prob=T)
+
+x = seq(0, 10, 0.01)
+y = ifelse( x >= 0 & x<= 10, x/50, 0 )
+lines(x, y, col="blue")
+```
+
+
+The mean is
+```{r}
+mean(simul)
+```
+
+The standard deviation is
+```{r}
+sd(simul)
+```
+
+
+#### c. For the rejection sampling method used in part (b), what is the probability of acceptance?
+
+
+The probability of acceptance is $\small{\frac{1}{5}}$ since 5 is the supremum (We find this occurs at $\small{x = 1}$).
+
+We verify this experimentally:
+```{r}
+length(simul)/trials
+```
+
+
+
+

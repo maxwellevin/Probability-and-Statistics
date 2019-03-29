@@ -1,0 +1,157 @@
+---
+title: 'Math 490 HW #21'
+author: "Maxwell Levin"
+date: "April 23, 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment=NA)
+```
+
+
+## Question 1.
+Let $\small{\pi}$ be the probability distribution of the random variable denoing the minimum value obtained from rolling two fair tentrahedra. Use the transition matrix:
+
+\[
+  \textbf{Q} =
+  \begin{bmatrix}
+    \frac{1}{2} & \frac{1}{2} & 0 & 0 \\[1mm]
+    \frac{1}{2} & 0  & \frac{1}{2} & 0 \\[1mm]
+    0 & \frac{1}{2} & 0 & \frac{1}{2} \\[1mm]
+    0 & 0 & \frac{1}{2} & \frac{1}{2} \\[1mm]
+  \end{bmatrix}
+\]
+
+#### a. Find the probability distribution $\small{\pi}$. 
+
+We could do this by hand, but it would be rather tedious. Instead we ask our computer to run the following code in Python:
+```{python, python.reticulate=FALSE}
+unique_sum = {}
+for d1 in range(1, 5):
+  for d2 in range(1, 5):
+    new_sum = min(d1, d2)
+    if new_sum in unique_sum:
+      unique_sum[new_sum] += 1
+    else:
+      unique_sum[new_sum] = 1
+
+for key in unique_sum:
+  print(key, ": ", (unique_sum[key] / 16))
+
+```
+
+Thus we see that 
+
+\[
+  \pi = \left[\frac{7}{16}, \frac{5}{16}, \frac{3}{16}, \frac{1}{16}\right].
+\]
+
+#### b. Verify that $\small{\textbf{Q}}$ is the transition matrix of a regular Markov Chain.
+
+We can verify that $\small{\textbf{Q}}$ is a regular transition matrix by raising it various powers of n until we see that all of its entries are strictly positive. We can do this in R by running the following code:
+
+```{r, echo=FALSE, include=FALSE}
+require(expm)
+```
+
+```{r}
+Q = matrix(c(1/2, 1/2, 0, 0, 
+             1/2, 0, 1/2, 0, 
+             0, 1/2, 0, 1/2, 
+             0, 0, 1/2, 1/2), 
+           nrow=4, ncol=4, byrow=TRUE)
+
+Q %^% 2
+```
+We see that there are still some zeros so we try a higher number:
+```{r}
+Q %^% 3
+```
+
+We see that $\small{\textbf{Q}}$ has all positive entries when n = 3. Thus we have shown that $\small{\textbf{Q}}$ is a regular transition matrix.
+
+
+
+#### c. Run the Metropolis-Hastings Algorithm to simulate the Markov Chain with $\small{\pi}$ as the stationary distribution. The chain may start with state 1. Make a relative frequency table of the 1024 values of the simulated chain. 
+
+We run the following code in R:
+
+```{r}
+stationary = c(7/16, 5/16, 3/16, 1/16)
+
+initial <- c(1, 0, 0, 0);
+
+metro <- function(step, initial, Q) {
+	x <- sample(length(initial), 1, prob=initial);
+	      # chain starts with the initial state      
+	      
+	for (j in 1:step) {
+		q.x <- Q[x, ];
+		y <- sample(length(q.x), 1, prob=q.x);
+		u <- runif(1);
+        if ( u <= stationary[y]*Q[y,x]/(stationary[x]*Q[x,y]) ) {
+        	x <- y;
+        }
+	}
+	x;
+}
+
+# In R Console:  
+simul <- replicate(1024, metro(500, initial, Q));
+table(simul) / length(simul);
+```
+
+This seems pretty similar to the probability distribution $\small{\pi}$ that we generated in part (a)!
+
+
+#### d. Find the transition matrix $\small{\textbf{P} = [p_{x,y}]}$ of the Markov Chain constructed under the Metropolis-Hastings Algorithm.
+
+We run the following code in R to find the transition matrix:
+```{r}
+
+P <- matrix(c(rep(0, 16)), nrow = 4, ncol=4, byrow = T);
+
+for (x in 1:4) {
+	for (y in (1:4)[-x]) {
+		if (Q[x, y] > 0) {
+			P[x, y] = Q[x, y] * min(
+			1, (stationary[y] * Q[y,x]) / (stationary[x] * Q[x,y]));
+		}
+	}
+}
+
+for (x in 1:4) {
+	P[x, x] = 1 - sum(P[x,]);
+}
+
+P
+```
+
+
+
+#### e. Use R to verify that $\small{\pi}$ is the stationary distribution of the Markov Chain constructed under the Metropolis-Hastings Algorithm.
+
+
+
+
+We run the following commands in R to see what the Metropolis-Hastings Algorithm thinks our stationary distribution is:
+```{r, include=FALSE, echo=FALSE}
+library(MASS)
+```
+
+```{r}
+trP <- t(P);  # transpose matrix P
+eigenSys = eigen(trP)
+fractions(eigenSys$vectors[ ,1] / sum( eigenSys$vectors[ ,1] ))
+```
+
+We see that this is exactly what we got for $\small{\pi}$.
+
+
+
+
+
+
+
+
