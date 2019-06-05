@@ -1,0 +1,193 @@
+---
+title: 'Math 490 HW #10'
+author: "Maxwell Levin"
+date: "February 20, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, comment=NA, fig.width = 6, fig.height = 6, fig.align = "center")
+```
+
+
+## Question 1.
+
+#### Let $\small{I}$ be the area of the intersection of the unit circle centered at $\small{(0,0)}$ and the unit circle centered at $\small{(1,0)}$ inside the unit square. Consider computing $\small{I}$ using Monte Carlo methods.
+
+
+```{r}
+# Make a plot of our problem.
+plot(0,0, type='l', xlim=c(0.0,1), ylim=c(0,1), lwd=1, xlab="X", ylab="Y")
+
+# Do Monte-Carlo Stuff
+inX = NULL
+inY = NULL
+outX = NULL
+outY = NULL
+x = runif(1000)
+y = runif(1000)
+for (i in 1:length(x)) {
+  if ((x[i]^2 + y[i]^2 <= 1) & ((x[i]-1)^2 + y[i]^2 <= 1)) {
+    inX = c(inX, x[i])
+    inY = c(inY, y[i])
+  } 
+  else {
+    outX = c(outX, x[i])
+    outY = c(outY, y[i])
+  }
+}
+points(inX, inY, col="blue", cex=0.5)
+points(outX, outY, col="orange", cex=0.5)
+
+# Make First Quarter-Circle
+r = 1
+theta = seq(0, pi/2, 0.01)
+x1 = numeric(length(theta))
+y1 = numeric(length(theta))
+for (i in 0:length(theta)) {
+    x1[i] = r * cos(theta[i])
+    y1[i] = r * sin(theta[i])
+  }
+lines(x1, y1,col="black", lwd=2)
+
+# Make First Quarter-Circle
+r = 1
+theta = seq(pi/2, pi, 0.01)
+x2 = numeric(length(theta))
+y2 = numeric(length(theta))
+for (i in 0:length(theta)) {
+    x2[i] = r * cos(theta[i]) + 1
+    y2[i] = r * sin(theta[i])
+  }
+lines(x2,y2, col="black", lwd=2)
+```
+
+
+#### a. Construct a Monte Carlo estimator $\small{Z_N^{MC} = Z_N^{MC}(X_1, X_2, \dots, X_N)}$ with sample size $\small{N}$ for estimating $\small{I}$.
+
+Our Monte Carlo estimator for $\small{I}$ is given by
+
+\[
+  Z_N^{MC} = \frac{\phi(x_1, y_1) + \phi(x_2, y_2) + \dots + \phi(x_N, y_N)}{N},
+\]
+
+where we define $\small{\phi(x)}$ by
+
+\[
+\phi(x, y) =    \left\{
+\begin{array}{ll}
+      1 &  \text{if } 0 \leq x^2 + y^2 \leq 1 \text{ and } 0 \leq (x - 1)^2 + y^2 \leq 1; \\
+      0 & \text{otherwise.} \\
+\end{array} 
+\right. \]
+
+
+#### b. If sample size $\small{N = 100}$, what is the mean and the standard deviation of the Monte Carlo estimator constructed in part (a)?
+
+
+With a little bit of math we find that 
+
+\[
+  E(Z_{100}^{MC}) = I \approx 0.614.
+\]
+
+We know from class that the standard deviation, $\small{\sigma}$, of a Monte Carlo estimator with a sample size of 1 is given by
+
+\[
+  SD(Z_1^{MC}) = \sqrt{I(1-I)} \approx 0.487.
+\]
+
+The standard deviation of $\small{Z_{100}^{MC}}$ is given by
+
+\[
+  SD(Z_{100}^{MC}) = \frac{1}{10}SD(Z_1^{MC}) \approx 0.0487.
+\]
+
+
+
+
+#### c. With sample size $\small{N = 100}$, use R to simulate 1024 Monte Carlo estimates of $\small{I}$. Make a histogram of those 1024 Monte Carlo estimates, and report the mean and the standard deviation of those 1024 estimates.
+
+```{r, echo=TRUE}
+areasMC = function(sam, rep) {
+  obs = numeric(rep)
+  for (i in 0:rep-1) {
+    hits = 0
+    for (j in 1:sam) {
+      x = runif(1)
+      y = runif(1)
+      if ( x^2 + y^2 <= 1 & (x-1)^2 + y^2 <= 1 ) {
+        hits = hits + 1
+      }
+    }
+    obs[i] = hits/sam
+  }
+  obs
+}
+
+simN100 = areasMC(100, 1024)
+hist(simN100, breaks=seq(min(simN100), max(simN100) + 0.01, 0.02), prob=T)
+```
+
+The mean of our simulation is
+```{r}
+mean(simN100)
+```
+
+The standard deviation of our simulation is
+```{r}
+sd(simN100)
+```
+
+We notice that our calculations here are not far off from our calculations in part (b).
+
+
+#### d. If the sample size $\small{N = 100}$, how likely is our Monte Carlo estimate $\small{Z_{100}^{MC}}$ to yield an estimate of $\small{I}$ within an error of $\small{\pm 0.03}$? Use R to simulate this probabilty. 
+
+We run the following code to determine this probability:
+```{r, echo=TRUE}
+getPr = function(sam, rep, err=0.03) {
+  I = 0.614
+  count = 0
+  for (i in 1:rep) {
+    hits = 0
+    for (j in 1:sam) {
+      x = runif(1)
+      y = runif(1)
+      if ( x^2 + y^2 <= 1 & (x-1)^2 + y^2 <= 1 ) {
+        hits = hits + 1
+      }
+    }
+    zbar = hits/sam
+    if (I - 0.03 <= zbar & zbar <= I + 0.03){
+      count = count + 1
+    }
+  }
+  count/rep
+}
+
+prN100 = getPr(100, 1024)
+prN100
+```
+
+Thus we see that we have around a 50% chance of getting within $\small{\pm 0.03}$ of $\small{I}$.
+
+#### e. How large should $\small{N}$ be such that our Monte Carlo estimate $\small{Z_N^{MC}}$ would yield an estimate of $\small{I}$ within an error of $\small{\pm 0.03}$ with probability $\small{95\%}$?
+
+We know from class that we should pick $\small{N}$ such that
+
+\[
+  N = \left(\frac{1.96\sigma}{0.03}\right)^2 \approx 1012.
+\]
+
+We can verify this by running the code we wrote in part (d) with a sample size of 1012 and 1024 repitions:
+
+```{r}
+prN1000 = getPr(1012, 1024)
+prN1000
+```
+
+Success!
+
+
+
